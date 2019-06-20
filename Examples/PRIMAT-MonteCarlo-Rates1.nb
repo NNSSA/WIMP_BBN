@@ -1,0 +1,1375 @@
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["\<\
+Using PRIMAT to estimate uncertainty on rates using a Monte-Carlo\
+\>", "Chapter",
+ CellChangeTimes->{{3.720325027046112*^9, 3.720325035078391*^9}, {
+  3.722627040669939*^9, 3.722627051266953*^9}, {3.722666298264085*^9, 
+  3.722666305717074*^9}, {3.725263295441085*^9, 3.725263296018257*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Loading PRIMAT", "Subsection",
+ CellChangeTimes->{{3.722627131658196*^9, 3.7226271365289717`*^9}, {
+  3.722665240944776*^9, 3.72266524124852*^9}, {3.725263204521102*^9, 
+  3.725263205222158*^9}}],
+
+Cell["\<\
+Setting the notebook directory (in batch mode this is not evaluated because \
+it seems to be the default one)\
+\>", "Text",
+ CellChangeTimes->{{3.72266522950069*^9, 3.722665237685095*^9}, 
+   3.72268092494451*^9, {3.722681154664906*^9, 3.722681163156636*^9}, {
+   3.722682328844692*^9, 3.722682342680447*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"SetDirectory", "[", 
+   RowBox[{"NotebookDirectory", "[", "]"}], "]"}], ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.722682311429455*^9, 3.7226823164429626`*^9}, 
+   3.7226823614573402`*^9}],
+
+Cell["\<\
+Then we go the parent directory, or base directory of PRIMAT.\
+\>", "Text",
+ CellChangeTimes->{{3.722682344519925*^9, 3.722682357655066*^9}, {
+  3.725263212766704*^9, 3.7252632133451977`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"SetDirectory", "[", 
+  RowBox[{"ParentDirectory", "[", 
+   RowBox[{"Directory", "[", "]"}], "]"}], "]"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.693991634023436*^9, 3.693991652295326*^9}, {
+   3.693991683803711*^9, 3.693991695148983*^9}, 3.6947957225347357`*^9, {
+   3.699863879637285*^9, 3.699863880492168*^9}, {3.699863992861474*^9, 
+   3.6998639929768543`*^9}, {3.699895053526989*^9, 3.699895055859015*^9}, {
+   3.699896790723095*^9, 3.699896794461301*^9}, {3.699933649566367*^9, 
+   3.6999336496255627`*^9}, {3.700043367718549*^9, 3.700043370327463*^9}, {
+   3.715934694586144*^9, 3.715934694930004*^9}, {3.7159347275061626`*^9, 
+   3.7159347279589863`*^9}, {3.722682263308607*^9, 3.7226822885017633`*^9}}],
+
+Cell[BoxData["\<\"/Users/pitrou/Dropbox/iap/notebooks/BBN\"\>"], "Output"]
+}, Open  ]],
+
+Cell["\<\
+We load PRIMAT. It takes some time because it starts reading the file with \
+nuclear reactions and deduces which are the nuclides needed, 
+and it starts to build formally the network of equations\
+\>", "Text",
+ CellChangeTimes->{{3.722690254282024*^9, 3.722690288210243*^9}, {
+  3.722690477786078*^9, 3.7226904782690973`*^9}, {3.725263222885673*^9, 
+  3.725263223565138*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Timing", "[", 
+  RowBox[{"<<", "PRIMAT-Main.m"}], "]"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.722627141741618*^9, 3.722627161037244*^9}, {
+   3.72266446915127*^9, 3.7226644693502483`*^9}, {3.722664592812298*^9, 
+   3.722664593183573*^9}, {3.722664687261566*^9, 3.722664687461649*^9}, {
+   3.722664834402657*^9, 3.7226648347171087`*^9}, 3.722666575975152*^9, {
+   3.7226902512688723`*^9, 3.722690253491892*^9}, {3.725262595482216*^9, 
+   3.725262596066578*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"16.200924`", ",", "Null"}], "}"}]], "Output"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Launch MC", "Subsection",
+ CellChangeTimes->{{3.722637041724874*^9, 3.722637048851964*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"$ParallelBool", "=", "True"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"MachineNumerics", "=", "\"\<\>\""}], 
+  RowBox[{"(*", "$MachineName", "*)"}], ";"}]}], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.722629966342619*^9, 3.722629967962264*^9}, {
+  3.722630021917164*^9, 3.722630036539366*^9}, {3.7226305912082767`*^9, 
+  3.7226305924349537`*^9}, {3.7226306967604837`*^9, 3.722630702786304*^9}, {
+  3.722665383522048*^9, 3.722665391372898*^9}, {3.722708712927544*^9, 
+  3.7227087150388327`*^9}, {3.722767365448904*^9, 3.722767367202777*^9}}],
+
+Cell["\<\
+Let us run a Monte Carlo with LengthMC points. Possibly with parallelization \
+if the corresponding option $ParallelBool is set to True.\
+\>", "Text",
+ CellChangeTimes->{{3.699779955616386*^9, 3.699779985368589*^9}, {
+  3.699781446567418*^9, 3.699781448224738*^9}, {3.700461198591786*^9, 
+  3.700461210507118*^9}, {3.722630569597633*^9, 3.722630572437779*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"LengthMC", "=", "10"}], ";", 
+  RowBox[{"(*", " ", 
+   RowBox[{"should", " ", "put", " ", "1000", " ", "or", " ", "10000"}], " ", 
+   "*)"}]}]], "Input",
+ InitializationCell->True],
+
+Cell["We decide if we randomize on baryons and neutron lifetime", "Text",
+ CellChangeTimes->{{3.720215751697893*^9, 3.720215764679812*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"$Randomh2\[CapitalOmega]b", "=", "False"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"$Random\[Tau]neutron", "=", "True"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"$RandomNuclearRates", "=", "True"}], ";"}]}], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.722630616570166*^9, 3.722630648143187*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"AbsoluteTiming", "[", 
+   RowBox[{
+    RowBox[{"RunPRIMATMonteCarlo", "[", "LengthMC", "]"}], ";"}], "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"DumpMC", "[", 
+   RowBox[{"MachineNumerics", "<>", "\"\<NuclearNeutron\>\""}], "]"}], 
+  ";"}], "\[IndentingNewLine]"}], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.72042016783974*^9, 3.720420172383272*^9}, {
+   3.721033933406802*^9, 3.7210339505827627`*^9}, {3.722630668983671*^9, 
+   3.722630683096389*^9}, 3.722698777626875*^9, 3.722709060378498*^9, {
+   3.7252633008662148`*^9, 3.7252633012299833`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"Running a Monte-Carlo with \"\>", "\[InvisibleSpace]", "10", 
+   "\[InvisibleSpace]", "\<\" points.\"\>"}],
+  SequenceForm["Running a Monte-Carlo with ", 10, " points."],
+  Editable->False]], "Print"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"Number of Kernels \"\>", "\[InvisibleSpace]", "2"}],
+  SequenceForm["Number of Kernels ", 2],
+  Editable->False]], "Print"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"Iteration \"\>", "\[InvisibleSpace]", "1", 
+   "\[InvisibleSpace]", "\<\"  Memory usage = \"\>", "\[InvisibleSpace]", 
+   "54569088", "\[InvisibleSpace]", "\<\" time = \"\>", "\[InvisibleSpace]", 
+   "63.618062`", "\[InvisibleSpace]", "\<\"  Kernel : \"\>", 
+   "\[InvisibleSpace]", "2"}],
+  SequenceForm[
+  "Iteration ", 1, "  Memory usage = ", 54569088, " time = ", 63.618062, 
+   "  Kernel : ", 2],
+  Editable->False]], "Print",
+ ShowCellLabel->True],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"Iteration \"\>", "\[InvisibleSpace]", "4", 
+   "\[InvisibleSpace]", "\<\"  Memory usage = \"\>", "\[InvisibleSpace]", 
+   "54677704", "\[InvisibleSpace]", "\<\" time = \"\>", "\[InvisibleSpace]", 
+   "64.126993`", "\[InvisibleSpace]", "\<\"  Kernel : \"\>", 
+   "\[InvisibleSpace]", "1"}],
+  SequenceForm[
+  "Iteration ", 4, "  Memory usage = ", 54677704, " time = ", 64.126993, 
+   "  Kernel : ", 1],
+  Editable->False]], "Print",
+ ShowCellLabel->True],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"Iteration \"\>", "\[InvisibleSpace]", "2", 
+   "\[InvisibleSpace]", "\<\"  Memory usage = \"\>", "\[InvisibleSpace]", 
+   "54733312", "\[InvisibleSpace]", "\<\" time = \"\>", "\[InvisibleSpace]", 
+   "66.199973`", "\[InvisibleSpace]", "\<\"  Kernel : \"\>", 
+   "\[InvisibleSpace]", "2"}],
+  SequenceForm[
+  "Iteration ", 2, "  Memory usage = ", 54733312, " time = ", 66.199973, 
+   "  Kernel : ", 2],
+  Editable->False]], "Print",
+ ShowCellLabel->True],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"Iteration \"\>", "\[InvisibleSpace]", "5", 
+   "\[InvisibleSpace]", "\<\"  Memory usage = \"\>", "\[InvisibleSpace]", 
+   "54604816", "\[InvisibleSpace]", "\<\" time = \"\>", "\[InvisibleSpace]", 
+   "65.802537`", "\[InvisibleSpace]", "\<\"  Kernel : \"\>", 
+   "\[InvisibleSpace]", "1"}],
+  SequenceForm[
+  "Iteration ", 5, "  Memory usage = ", 54604816, " time = ", 65.802537, 
+   "  Kernel : ", 1],
+  Editable->False]], "Print",
+ ShowCellLabel->True],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"Iteration \"\>", "\[InvisibleSpace]", "3", 
+   "\[InvisibleSpace]", "\<\"  Memory usage = \"\>", "\[InvisibleSpace]", 
+   "54695888", "\[InvisibleSpace]", "\<\" time = \"\>", "\[InvisibleSpace]", 
+   "69.87158`", "\[InvisibleSpace]", "\<\"  Kernel : \"\>", 
+   "\[InvisibleSpace]", "2"}],
+  SequenceForm[
+  "Iteration ", 3, "  Memory usage = ", 54695888, " time = ", 69.87158, 
+   "  Kernel : ", 2],
+  Editable->False]], "Print",
+ ShowCellLabel->True],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"Iteration \"\>", "\[InvisibleSpace]", "6", 
+   "\[InvisibleSpace]", "\<\"  Memory usage = \"\>", "\[InvisibleSpace]", 
+   "54851520", "\[InvisibleSpace]", "\<\" time = \"\>", "\[InvisibleSpace]", 
+   "70.283209`", "\[InvisibleSpace]", "\<\"  Kernel : \"\>", 
+   "\[InvisibleSpace]", "1"}],
+  SequenceForm[
+  "Iteration ", 6, "  Memory usage = ", 54851520, " time = ", 70.283209, 
+   "  Kernel : ", 1],
+  Editable->False]], "Print",
+ ShowCellLabel->True],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"Iteration \"\>", "\[InvisibleSpace]", "7", 
+   "\[InvisibleSpace]", "\<\"  Memory usage = \"\>", "\[InvisibleSpace]", 
+   "54819992", "\[InvisibleSpace]", "\<\" time = \"\>", "\[InvisibleSpace]", 
+   "66.286871`", "\[InvisibleSpace]", "\<\"  Kernel : \"\>", 
+   "\[InvisibleSpace]", "2"}],
+  SequenceForm[
+  "Iteration ", 7, "  Memory usage = ", 54819992, " time = ", 66.286871, 
+   "  Kernel : ", 2],
+  Editable->False]], "Print",
+ ShowCellLabel->True],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"Iteration \"\>", "\[InvisibleSpace]", "9", 
+   "\[InvisibleSpace]", "\<\"  Memory usage = \"\>", "\[InvisibleSpace]", 
+   "54883664", "\[InvisibleSpace]", "\<\" time = \"\>", "\[InvisibleSpace]", 
+   "67.723303`", "\[InvisibleSpace]", "\<\"  Kernel : \"\>", 
+   "\[InvisibleSpace]", "1"}],
+  SequenceForm[
+  "Iteration ", 9, "  Memory usage = ", 54883664, " time = ", 67.723303, 
+   "  Kernel : ", 1],
+  Editable->False]], "Print",
+ ShowCellLabel->True],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"Iteration \"\>", "\[InvisibleSpace]", "8", 
+   "\[InvisibleSpace]", "\<\"  Memory usage = \"\>", "\[InvisibleSpace]", 
+   "54795976", "\[InvisibleSpace]", "\<\" time = \"\>", "\[InvisibleSpace]", 
+   "68.148125`", "\[InvisibleSpace]", "\<\"  Kernel : \"\>", 
+   "\[InvisibleSpace]", "2"}],
+  SequenceForm[
+  "Iteration ", 8, "  Memory usage = ", 54795976, " time = ", 68.148125, 
+   "  Kernel : ", 2],
+  Editable->False]], "Print",
+ ShowCellLabel->True],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"Iteration \"\>", "\[InvisibleSpace]", "10", 
+   "\[InvisibleSpace]", "\<\"  Memory usage = \"\>", "\[InvisibleSpace]", 
+   "54640064", "\[InvisibleSpace]", "\<\" time = \"\>", "\[InvisibleSpace]", 
+   "67.101621`", "\[InvisibleSpace]", "\<\"  Kernel : \"\>", 
+   "\[InvisibleSpace]", "1"}],
+  SequenceForm[
+  "Iteration ", 10, "  Memory usage = ", 54640064, " time = ", 67.101621, 
+   "  Kernel : ", 1],
+  Editable->False]], "Print",
+ ShowCellLabel->True],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"Exporting \"\>", 
+   "\[InvisibleSpace]", "\<\"MonteCarlo/MCNuclearNeutron.dat\"\>"}],
+  SequenceForm["Exporting ", "MonteCarlo/MCNuclearNeutron.dat"],
+  Editable->False]], "Print"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"Exporting \"\>", 
+   "\[InvisibleSpace]", "\<\"MonteCarlo/RVNuclearNeutron.dat\"\>"}],
+  SequenceForm["Exporting ", "MonteCarlo/RVNuclearNeutron.dat"],
+  Editable->False]], "Print"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"Exporting \"\>", 
+   "\[InvisibleSpace]", "\<\"MonteCarlo/CosmoNuclearNeutron.dat\"\>"}],
+  SequenceForm["Exporting ", "MonteCarlo/CosmoNuclearNeutron.dat"],
+  Editable->False]], "Print"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[TextData[{
+ "We dumped the results on the harddisk so as to be able to analyze it later \
+\nThe file starting with MC is the list of abundances at the end of BBN for \
+all species and for all points of the Monte-Carlo. \nThe RV file is the list \
+of random variables used to generate the reaction rates.\nThe Cosmo file is \
+the list of cosmological parameters ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{
+      SuperscriptBox["h", "2"], 
+      SubscriptBox["\[CapitalOmega]", "b0"]}], ",", 
+     SubscriptBox["\[Tau]", "neutron"]}]}], TraditionalForm]]],
+ ")."
+}], "Text"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Results", "Subsection",
+ CellChangeTimes->{{3.700388615985243*^9, 3.700388621448763*^9}, {
+  3.71584510914366*^9, 3.715845109644685*^9}, {3.7203250993021097`*^9, 
+  3.7203251014460897`*^9}}],
+
+Cell["\<\
+We can import the results of the Monte-Carlo analysis made on a different \
+computer or earlier and that we have dumped on harddisk.\
+\>", "Text",
+ CellDingbat->"\[FilledSquare]",
+ CellChangeTimes->{{3.7159564709226522`*^9, 3.7159564791031446`*^9}, {
+  3.7199242123690157`*^9, 3.7199242221441402`*^9}, {3.7199252452178183`*^9, 
+  3.7199252627636557`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"MachineOfRuns", "=", "\"\<\>\""}], ";"}]], "Input",
+ CellChangeTimes->{{3.7204245029620657`*^9, 3.7204245184975348`*^9}, {
+   3.720430140927047*^9, 3.720430161485982*^9}, {3.720434987802101*^9, 
+   3.720434988498726*^9}, {3.7204994296124563`*^9, 3.720499430445425*^9}, {
+   3.720504583734527*^9, 3.7205045844475183`*^9}, {3.720511813299759*^9, 
+   3.7205118141430187`*^9}, {3.722398438062296*^9, 3.7223984388333893`*^9}, {
+   3.7223984719226933`*^9, 3.722398472782929*^9}, {3.722571045113858*^9, 
+   3.7225710458205357`*^9}, {3.722708728268379*^9, 3.722708729067544*^9}, 
+   3.722709901108088*^9, {3.722746375113928*^9, 3.722746378582068*^9}, 
+   3.722767355373913*^9}],
+
+Cell[BoxData[
+ RowBox[{"LoadMC", "[", 
+  RowBox[{"MachineOfRuns", "<>", "\"\<NuclearNeutron\>\""}], "]"}]], "Input",
+ CellChangeTimes->{
+  3.719924981206711*^9, {3.720344630220879*^9, 3.720344632945342*^9}, {
+   3.720345370366074*^9, 3.720345371322515*^9}, {3.720346342724478*^9, 
+   3.720346343602743*^9}, {3.720369674279675*^9, 3.720369710117032*^9}, {
+   3.720370216084404*^9, 3.720370222959298*^9}, {3.720417689577656*^9, 
+   3.720417690322299*^9}, {3.720417786670209*^9, 3.720417788301406*^9}, {
+   3.720417896776437*^9, 3.720417898432157*^9}, {3.720420124603478*^9, 
+   3.720420125360682*^9}, {3.720420466874053*^9, 3.720420469203705*^9}, {
+   3.720424424401115*^9, 3.720424427298293*^9}, {3.720424523904476*^9, 
+   3.720424528306765*^9}, {3.720430097249483*^9, 3.720430098057975*^9}, {
+   3.720430139958996*^9, 3.7204301592598953`*^9}, {3.7204301970232077`*^9, 
+   3.720430198318564*^9}, {3.7204335366983852`*^9, 3.720433539330181*^9}, {
+   3.720434985315094*^9, 3.720434986009067*^9}, {3.72060327669023*^9, 
+   3.720603286667625*^9}, {3.7206842157864122`*^9, 3.7206842248000727`*^9}, {
+   3.720684455678306*^9, 3.720684460800557*^9}, {3.72076534539674*^9, 
+   3.720765348064952*^9}, {3.7213645516408653`*^9, 3.721364551790552*^9}, 
+   3.72232732666055*^9, 3.722631825703281*^9, 3.722665432719194*^9, {
+   3.7253390489442463`*^9, 3.725339091442225*^9}, {3.725339475718491*^9, 
+   3.725339476243322*^9}}],
+
+Cell["\<\
+We check that we have many (10 000?) points for the 59 nuclides\
+\>", "Text",
+ CellChangeTimes->{{3.7226654338835783`*^9, 3.722665446749383*^9}, {
+  3.722708730788128*^9, 3.722708730968162*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Dimensions", "[", "MC", "]"}]], "Input",
+ CellChangeTimes->{
+  3.719924981206711*^9, {3.720344630220879*^9, 3.720344632945342*^9}, {
+   3.720345370366074*^9, 3.720345371322515*^9}, {3.720346342724478*^9, 
+   3.720346343602743*^9}, {3.720369674279675*^9, 3.720369710117032*^9}, {
+   3.720370216084404*^9, 3.720370222959298*^9}, {3.720417689577656*^9, 
+   3.720417690322299*^9}, {3.720417786670209*^9, 3.720417788301406*^9}, {
+   3.720417896776437*^9, 3.720417898432157*^9}, {3.720420124603478*^9, 
+   3.720420125360682*^9}, {3.720420466874053*^9, 3.720420469203705*^9}, {
+   3.720424424401115*^9, 3.720424427298293*^9}, {3.720424523904476*^9, 
+   3.720424528306765*^9}, {3.720430097249483*^9, 3.720430098057975*^9}, {
+   3.720430139958996*^9, 3.7204301592598953`*^9}, {3.7204301970232077`*^9, 
+   3.720430198318564*^9}, {3.7204335366983852`*^9, 3.720433539330181*^9}, {
+   3.720434985315094*^9, 3.720434986009067*^9}, {3.72060327669023*^9, 
+   3.720603286667625*^9}, {3.7206842157864122`*^9, 3.7206842248000727`*^9}, {
+   3.720684455678306*^9, 3.720684460800557*^9}, {3.72076534539674*^9, 
+   3.720765348064952*^9}, {3.7213645516408653`*^9, 3.721364551790552*^9}, 
+   3.72232732666055*^9, 3.722631825703281*^9, 3.722665432719194*^9}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"10", ",", "59"}], "}"}]], "Output"]
+}, Open  ]],
+
+Cell["\<\
+We work with log(quantities) so as to relate relative variations\
+\>", "Text",
+ CellChangeTimes->{{3.719925281368474*^9, 3.719925301369741*^9}}],
+
+Cell[BoxData[{
+ RowBox[{"YP", ":=", 
+  RowBox[{"4", "*", 
+   RowBox[{
+   "ElementColumn", "[", "\"\<a\>\"", "]"}]}]}], "\[IndentingNewLine]", 
+ RowBox[{"DH", ":=", 
+  RowBox[{
+   SuperscriptBox["10", "5"], 
+   RowBox[{
+    RowBox[{"ElementColumn", "[", "\"\<d\>\"", "]"}], "/", 
+    RowBox[{
+    "ElementColumn", "[", "\"\<p\>\"", "]"}]}]}]}], "\[IndentingNewLine]", 
+ RowBox[{"LogY", ":=", 
+  RowBox[{"Log", "[", 
+   RowBox[{"4", "*", 
+    RowBox[{"ElementColumn", "[", "\"\<a\>\"", "]"}]}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"LogDoverH", ":=", 
+  RowBox[{"Log", "[", 
+   RowBox[{
+    SuperscriptBox["10", "5"], 
+    RowBox[{
+     RowBox[{"ElementColumn", "[", "\"\<d\>\"", "]"}], "/", 
+     RowBox[{"ElementColumn", "[", "\"\<p\>\"", "]"}]}]}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"LogHe3overH", ":=", 
+  RowBox[{"Log", "[", 
+   RowBox[{
+    SuperscriptBox["10", "5"], 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"ElementColumn", "[", "\"\<He3\>\"", "]"}], "+", 
+       RowBox[{"ElementColumn", "[", "\"\<t\>\"", "]"}]}], ")"}], "/", 
+     RowBox[{"ElementColumn", "[", "\"\<p\>\"", "]"}]}]}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"LogLi7overH", ":=", 
+  RowBox[{"Log", "[", 
+   RowBox[{
+    SuperscriptBox["10", "10"], 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"ElementColumn", "[", "\"\<Li7\>\"", "]"}], "+", 
+       RowBox[{"ElementColumn", "[", "\"\<Be7\>\"", "]"}]}], ")"}], "/", 
+     RowBox[{"ElementColumn", "[", "\"\<p\>\"", "]"}]}]}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"Log\[Tau]", ":=", 
+  RowBox[{"Log", "@", "\[Tau]neutronList"}]}], "\[IndentingNewLine]", 
+ RowBox[{"LogBaryons", ":=", 
+  RowBox[{"Log", "@", "h2\[CapitalOmega]b0List"}]}]}], "Input",
+ CellChangeTimes->{{3.7199009399198523`*^9, 3.719900940144876*^9}, {
+   3.719923536024514*^9, 3.719923579744027*^9}, {3.719925018014885*^9, 
+   3.719925019946806*^9}, {3.719925068211965*^9, 3.719925116366634*^9}, {
+   3.719925432430481*^9, 3.719925441554583*^9}, {3.7199255683774242`*^9, 
+   3.719925581541492*^9}, {3.720424575967773*^9, 3.720424576322719*^9}, {
+   3.720755583064455*^9, 3.720755599484138*^9}, 3.7226319150280247`*^9}],
+
+Cell["Averages and standard deviation", "Text",
+ CellChangeTimes->{{3.722631917165968*^9, 3.722631923737978*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"MeanthYHe", "=", 
+  RowBox[{"Mean", "[", 
+   RowBox[{"Exp", "@", "LogY"}], "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"\[Sigma]thYHe", "=", 
+  RowBox[{"StandardDeviation", "[", 
+   RowBox[{"Exp", "@", "LogY"}], "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"MeanthDH", "=", 
+  RowBox[{"Mean", "[", 
+   RowBox[{"Exp", "@", "LogDoverH"}], "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"\[Sigma]thDH", "=", 
+  RowBox[{"StandardDeviation", "[", 
+   RowBox[{"Exp", "@", "LogDoverH"}], "]"}]}]}], "Input",
+ CellChangeTimes->{{3.7199009399198523`*^9, 3.719900940144876*^9}, {
+  3.719923536024514*^9, 3.719923579744027*^9}, {3.719925018014885*^9, 
+  3.719925019946806*^9}, {3.719925068211965*^9, 3.719925116366634*^9}, {
+  3.719925432430481*^9, 3.719925441554583*^9}, {3.7199255683774242`*^9, 
+  3.719925581541492*^9}, {3.720424575967773*^9, 3.720424576322719*^9}, {
+  3.720755583064455*^9, 3.720755599484138*^9}, {3.7226319150280247`*^9, 
+  3.722631926180457*^9}}],
+
+Cell[BoxData["0.24716017615328617`"], "Output"],
+
+Cell[BoxData["0.0003022288069257904`"], "Output"],
+
+Cell[BoxData["2.4681043620227245`"], "Output"],
+
+Cell[BoxData["0.03156198594685273`"], "Output"]
+}, Open  ]],
+
+Cell["Correlations", "Text",
+ CellChangeTimes->{{3.7226318786107197`*^9, 3.722631886089202*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"YpEtaMC", "=", 
+  RowBox[{"ListPlot", "[", 
+   RowBox[{
+    RowBox[{"Transpose", "[", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"Exp", "@", "Log\[Tau]"}], ",", 
+       RowBox[{"Exp", "@", "LogY"}]}], "}"}], "]"}], ",", 
+    RowBox[{"Frame", "\[Rule]", "True"}], ",", 
+    RowBox[{"FrameLabel", "\[Rule]", 
+     RowBox[{"{", 
+      RowBox[{
+      "\"\<\!\(\*SubscriptBox[\(\[Tau]\), \(n\)]\)(s)\>\"", ",", 
+       "\"\<\!\(\*SubscriptBox[\(Y\), \(P\)]\)\>\""}], "}"}]}], ",", 
+    RowBox[{"PlotStyle", "\[Rule]", "Black"}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.719920914104474*^9, 3.719920925174284*^9}, {
+   3.719923562291789*^9, 3.71992356497024*^9}, {3.719923624986071*^9, 
+   3.719923671804236*^9}, {3.719925136131733*^9, 3.719925147779874*^9}, {
+   3.719925367763269*^9, 3.7199253679406424`*^9}, {3.719925418918667*^9, 
+   3.719925422116756*^9}, {3.719925453490822*^9, 3.719925517714802*^9}, 
+   3.719925584693223*^9, {3.7199257931739597`*^9, 3.719925799499032*^9}, {
+   3.7203448480209503`*^9, 3.720344863969832*^9}, {3.720415228739999*^9, 
+   3.7204152356591253`*^9}, {3.720435025658201*^9, 3.720435050877763*^9}, {
+   3.722631891380671*^9, 3.722631891759828*^9}}],
+
+Cell[BoxData[
+ GraphicsBox[{{}, {{}, 
+    {GrayLevel[0], PointSize[0.012833333333333334`], AbsoluteThickness[1.6], 
+     PointBox[{{879.8885429784386, 0.2471749868910992}, {879.9986924959469, 
+      0.24716524736183088`}, {880.4698086677572, 0.24730866493925552`}, {
+      878.3815274613955, 0.2468429278174619}, {882.2748613507208, 
+      0.24768016303079468`}, {880.7850661308598, 0.24738538002453092`}, {
+      879.3498772476639, 0.24703852688992076`}, {877.0539513705937, 
+      0.24657384931504805`}, {880.337006869161, 0.24729732372930976`}, {
+      879.8614849081375, 0.24713469153361053`}}]}, {}}, {}},
+  AspectRatio->NCache[GoldenRatio^(-1), 0.6180339887498948],
+  Axes->{True, True},
+  AxesLabel->{None, None},
+  AxesOrigin->{876.9723746521543, 0.24651853362926074`},
+  DisplayFunction->Identity,
+  Frame->{{True, True}, {True, True}},
+  FrameLabel->{{
+     FormBox[
+     "\"\\!\\(\\*SubscriptBox[\\(Y\\), \\(P\\)]\\)\"", TraditionalForm], 
+     None}, {
+     FormBox[
+     "\"\\!\\(\\*SubscriptBox[\\(\[Tau]\\), \\(n\\)]\\)(s)\"", 
+      TraditionalForm], None}},
+  FrameTicks->{{Automatic, Automatic}, {Automatic, Automatic}},
+  GridLines->{None, None},
+  GridLinesStyle->Directive[
+    GrayLevel[0.5, 0.4]],
+  ImagePadding->All,
+  Method->{"CoordinatesToolOptions" -> {"DisplayFunction" -> ({
+        (Part[{{Identity, Identity}, {Identity, Identity}}, 1, 2][#]& )[
+         Part[#, 1]], 
+        (Part[{{Identity, Identity}, {Identity, Identity}}, 2, 2][#]& )[
+         Part[#, 2]]}& ), "CopiedValueFunction" -> ({
+        (Part[{{Identity, Identity}, {Identity, Identity}}, 1, 2][#]& )[
+         Part[#, 1]], 
+        (Part[{{Identity, Identity}, {Identity, Identity}}, 2, 2][#]& )[
+         Part[#, 2]]}& )}},
+  PlotRange->{{877.0539513705937, 882.2748613507208}, {0.24657384931504805`, 
+   0.24768016303079468`}},
+  PlotRangeClipping->True,
+  PlotRangePadding->{{
+     Scaled[0.02], 
+     Scaled[0.02]}, {
+     Scaled[0.05], 
+     Scaled[0.05]}},
+  Ticks->{Automatic, Automatic}]], "Output"]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Estimation", " ", "of", " ", "\[Delta]", " ", "ln", " ", 
+   RowBox[{
+    SubscriptBox["Y", "P"], "/", "\[Delta]"}], " ", "ln", " ", 
+   SubscriptBox["\[Tau]", "n"], " ", "and", " ", "idem", " ", "for", " ", 
+   RowBox[{"D", "/", "H"}]}], ",", " ", 
+  RowBox[{
+   RowBox[{"He3", "/", "H"}], " ", "and", " ", 
+   RowBox[{"Li7", "/", 
+    RowBox[{"H", "."}]}]}]}]], "Text",
+ CellChangeTimes->{{3.71990064705646*^9, 3.719900743743637*^9}, {
+   3.719900805628943*^9, 3.7199009554090643`*^9}, {3.7199207629280787`*^9, 
+   3.719920821729721*^9}, {3.719923571385433*^9, 3.719923585935356*^9}, {
+   3.71992368027106*^9, 3.719923709677842*^9}, {3.719925174032504*^9, 
+   3.719925182506085*^9}, 3.720346109039415*^9, {3.720684351156906*^9, 
+   3.720684352435129*^9}, 3.721050320721672*^9, 3.721101103388607*^9, {
+   3.721364344135936*^9, 3.721364345471079*^9}, 3.7213645605341883`*^9, {
+   3.721366120369006*^9, 3.721366121383501*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"S\[Tau]", "=", 
+  RowBox[{
+  "StandardDeviation", "[", "Log\[Tau]", "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"SB", "=", 
+  RowBox[{"StandardDeviation", "[", "LogBaryons", "]"}]}]}], "Input",
+ CellChangeTimes->{{3.719925658182267*^9, 3.719925672403627*^9}, {
+  3.720345493803872*^9, 3.7203454957075977`*^9}}],
+
+Cell[BoxData["0.0015908989492591256`"], "Output"],
+
+Cell[BoxData["9.362222582871203`*^-16"], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Dependence wrt to ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["\[Tau]", "neutron"], TraditionalForm]]]
+}], "Text",
+ CellChangeTimes->{{3.720424584226103*^9, 3.720424609259848*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"Covariance", "[", 
+   RowBox[{"LogY", ",", "Log\[Tau]"}], "]"}], "/", 
+  SuperscriptBox["S\[Tau]", "2"]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Covariance", "[", 
+   RowBox[{"LogDoverH", ",", "Log\[Tau]"}], "]"}], "/", 
+  SuperscriptBox["S\[Tau]", "2"]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Covariance", "[", 
+   RowBox[{"LogHe3overH", ",", "Log\[Tau]"}], "]"}], "/", 
+  SuperscriptBox["S\[Tau]", "2"]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Covariance", "[", 
+   RowBox[{"LogLi7overH", ",", "Log\[Tau]"}], "]"}], "/", 
+  SuperscriptBox["S\[Tau]", "2"]}]}], "Input",
+ CellChangeTimes->{{3.71990064705646*^9, 3.719900743743637*^9}, {
+   3.719900805628943*^9, 3.7199009554090643`*^9}, {3.7199207629280787`*^9, 
+   3.719920821729721*^9}, {3.719923571385433*^9, 3.719923585935356*^9}, {
+   3.71992368027106*^9, 3.719923707431034*^9}, {3.719925156846571*^9, 
+   3.719925171251031*^9}, 3.719925304624475*^9, {3.71992567961136*^9, 
+   3.7199256904079227`*^9}, {3.720345503327991*^9, 3.7203455078109417`*^9}, {
+   3.720424600031497*^9, 3.720424602955791*^9}}],
+
+Cell[BoxData["0.7669975728456099`"], "Output"],
+
+Cell[BoxData[
+ RowBox[{"-", "3.0248454826275064`"}]], "Output"],
+
+Cell[BoxData[
+ RowBox[{"-", "6.518146296402174`"}]], "Output"],
+
+Cell[BoxData[
+ RowBox[{"-", "3.782770468856234`"}]], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Observed values for ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["Y", "P"], TraditionalForm]]]
+}], "Text",
+ CellChangeTimes->{{3.722665508922759*^9, 3.722665522769141*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"\[Sigma]ObsYHeCorrect", "=", "0.0040"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"YHeobsCorrect", "=", "0.2449"}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"\[Sigma]ObsYHeWrong", "=", "0.0022"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"YHeobsWrong", "=", "0.2551"}], ";"}]}], "Input",
+ CellChangeTimes->{{3.720415145456463*^9, 3.720415145584188*^9}, {
+   3.720417838169162*^9, 3.720417838708407*^9}, {3.7204182085500603`*^9, 
+   3.720418229299711*^9}, {3.720419831619411*^9, 3.720419850727447*^9}, {
+   3.720420079835889*^9, 3.720420083954838*^9}, {3.720424648488002*^9, 
+   3.720424651245687*^9}, {3.720429600035941*^9, 3.720429671345216*^9}, 
+   3.720430584546988*^9, {3.720431270782012*^9, 3.720431278219769*^9}, {
+   3.720431462114716*^9, 3.720431475765819*^9}, 3.7226655269772043`*^9, {
+   3.725506875823544*^9, 3.725506876432302*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"YHeobs", "=", "YHeobsCorrect"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"\[Sigma]ObsYHe", "=", "\[Sigma]ObsYHeCorrect"}], ";"}]}], "Input",
+ CellChangeTimes->{{3.720415145456463*^9, 3.720415145584188*^9}, {
+   3.720417838169162*^9, 3.720417838708407*^9}, {3.7204182085500603`*^9, 
+   3.720418229299711*^9}, {3.720419831619411*^9, 3.720419850727447*^9}, {
+   3.720420079835889*^9, 3.720420083954838*^9}, {3.720424648488002*^9, 
+   3.720424651245687*^9}, {3.720429600035941*^9, 3.720429671345216*^9}, 
+   3.720430584546988*^9, {3.720431270782012*^9, 3.720431278219769*^9}, {
+   3.720431462114716*^9, 3.720431475765819*^9}, {3.7226655269772043`*^9, 
+   3.7226655414400177`*^9}}],
+
+Cell["Observed value for D/H", "Text",
+ CellChangeTimes->{{3.72266552851365*^9, 3.7226655384413013`*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"\[Sigma]ObsDH", "=", "0.030"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"YDHObs", "=", "2.527"}], ";"}]}], "Input",
+ CellChangeTimes->{{3.720415145456463*^9, 3.720415145584188*^9}, {
+  3.720417838169162*^9, 3.720417838708407*^9}, {3.7204182085500603`*^9, 
+  3.720418229299711*^9}, {3.720419831619411*^9, 3.720419850727447*^9}, {
+  3.720420079835889*^9, 3.720420083954838*^9}, {3.720424648488002*^9, 
+  3.720424651245687*^9}, {3.720429600035941*^9, 3.720429632724646*^9}, {
+  3.7204350780385113`*^9, 3.720435078585918*^9}}],
+
+Cell["Posterior of baryons from CMB", "Text",
+ CellChangeTimes->{{3.720424680914859*^9, 3.720424691117024*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{"Meanh2\[CapitalOmega]b0", "\[IndentingNewLine]", "\[Sigma]h2\
+\[CapitalOmega]b0"}], "Input",
+ CellChangeTimes->{{3.7226655645498133`*^9, 3.722665564696782*^9}}],
+
+Cell[BoxData["0.02225`"], "Output"],
+
+Cell[BoxData["0.00016`"], "Output"]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"PostCMB", "[", "h2\[CapitalOmega]b0_", "]"}], ":=", 
+   RowBox[{"With", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"\[Delta]h2\[CapitalOmega]b0", "=", 
+       RowBox[{"h2\[CapitalOmega]b0", "-", "Meanh2\[CapitalOmega]b0"}]}], 
+      "}"}], ",", 
+     RowBox[{
+      FractionBox["1", 
+       RowBox[{
+        SqrtBox[
+         RowBox[{"2", "\[Pi]"}]], "\[Sigma]h2\[CapitalOmega]b0"}]], 
+      RowBox[{"Exp", "[", 
+       FractionBox[
+        RowBox[{"-", 
+         SuperscriptBox[
+          RowBox[{"(", "\[Delta]h2\[CapitalOmega]b0", ")"}], "2"]}], 
+        RowBox[{"2", 
+         SuperscriptBox["\[Sigma]h2\[CapitalOmega]b0", "2"]}]], "]"}]}]}], 
+    "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.720418516289817*^9, 3.720418572292885*^9}, {
+   3.720418611011207*^9, 3.720418631990655*^9}, {3.72041914772367*^9, 
+   3.720419188840269*^9}, {3.720419385846911*^9, 3.720419392357709*^9}, {
+   3.72042036145639*^9, 3.720420370023747*^9}, {3.720420407034528*^9, 
+   3.720420419967601*^9}, {3.720420492575602*^9, 3.7204204943462*^9}, 
+   3.7204247049526033`*^9, {3.7204249800562563`*^9, 3.720424994266823*^9}, {
+   3.7204251211564302`*^9, 3.7204251300489264`*^9}}],
+
+Cell["Lower, median & upper quantiles.", "Text",
+ CellDingbat->"\[FilledSquare]",
+ CellChangeTimes->{{3.715957420127117*^9, 3.715957443606387*^9}},
+ FontSize->16],
+
+Cell["\<\
+We take the values corresponding to 16%, 50% and 84% of Monte-Carlo runs \
+(Because for a Gaussian one sigma corresponds to 68% so 0.16 - 0.84 range \
+takes indeed 68%). 
+These can be used to estimate the uncertainty in the abundance predictions.\
+\>", "Text",
+ CellChangeTimes->{{3.6997704240359297`*^9, 3.699770432577869*^9}, {
+   3.699780111640379*^9, 3.699780123835387*^9}, {3.715956787813767*^9, 
+   3.715956841239593*^9}, 3.715957446965952*^9, {3.7159581820868187`*^9, 
+   3.715958196071546*^9}, {3.716268491421802*^9, 3.716268531828465*^9}}],
+
+Cell["Useful quantiles", "Text",
+ CellChangeTimes->{{3.722571101231957*^9, 3.722571105475779*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"(", 
+   RowBox[{"1", "-", "0.6827"}], ")"}], "/", "2"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"(", 
+   RowBox[{"1", "-", "0.9545"}], ")"}], "/", "2"}]}], "Input",
+ CellChangeTimes->{{3.720756877882143*^9, 3.7207569186991177`*^9}}],
+
+Cell[BoxData["0.15865`"], "Output"],
+
+Cell[BoxData["0.022749999999999992`"], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"1", "-", "0.15865"}], "\[IndentingNewLine]", 
+ RowBox[{"1", "-", "0.02275"}]}], "Input",
+ CellChangeTimes->{{3.720772412701285*^9, 3.720772412947433*^9}}],
+
+Cell[BoxData["0.84135`"], "Output"],
+
+Cell[BoxData["0.97725`"], "Output"]
+}, Open  ]],
+
+Cell["Quantiles for most important isotopes, Mean, and \[Sigma]/mean", "Text",
+ 
+ CellChangeTimes->{{3.718615402297331*^9, 3.7186154139905*^9}, {
+  3.722665593451784*^9, 3.722665606894162*^9}, {3.722665671719433*^9, 
+  3.722665676814105*^9}}],
+
+Cell[BoxData[
+ SubscriptBox["Y", "P"]], "Text",
+ CellChangeTimes->{{3.7226656840164747`*^9, 3.7226656870424967`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"4", 
+  RowBox[{"Quantile", "[", 
+   RowBox[{
+    RowBox[{"TMC", "[", 
+     RowBox[{"[", 
+      RowBox[{"KeyVal", "[", "\"\<a\>\"", "]"}], "]"}], "]"}], ",", 
+    RowBox[{"{", 
+     RowBox[{"0.02275", ",", "0.15865", ",", "0.5", ",", 
+      RowBox[{"1", "-", "0.15865"}], ",", 
+      RowBox[{"1", "-", "0.02275"}]}], "}"}]}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"4", 
+  RowBox[{"Mean", "@", 
+   RowBox[{"TMC", "[", 
+    RowBox[{"[", 
+     RowBox[{"KeyVal", "[", "\"\<a\>\"", "]"}], "]"}], 
+    "]"}]}]}], "\[IndentingNewLine]", 
+ RowBox[{"4", 
+  RowBox[{"StandardDeviation", "@", 
+   RowBox[{"TMC", "[", 
+    RowBox[{"[", 
+     RowBox[{"KeyVal", "[", "\"\<a\>\"", "]"}], "]"}], 
+    "]"}]}]}], "\[IndentingNewLine]", 
+ RowBox[{"4", 
+  RowBox[{
+   RowBox[{"StandardDeviation", "@", 
+    RowBox[{"TMC", "[", 
+     RowBox[{"[", 
+      RowBox[{"KeyVal", "[", "\"\<a\>\"", "]"}], "]"}], "]"}]}], "/", 
+   "%%"}]}]}], "Input",
+ CellChangeTimes->{{3.718614317574994*^9, 3.718614398572309*^9}, {
+   3.718614504035223*^9, 3.718614606604792*^9}, {3.718615027768271*^9, 
+   3.718615033767117*^9}, {3.718615536570558*^9, 3.718615551373595*^9}, {
+   3.720756890051557*^9, 3.720756927798401*^9}, {3.7207569598996162`*^9, 
+   3.7207569771456003`*^9}, {3.72199140947611*^9, 3.72199144895218*^9}, {
+   3.722665681351499*^9, 3.7226656900368967`*^9}, {3.725260606379607*^9, 
+   3.7252606117012043`*^9}, {3.725260726878635*^9, 3.725260727116153*^9}, 
+   3.725338687130005*^9}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+  "0.24657384931504805`", ",", "0.2468429278174619`", ",", 
+   "0.2471652473618309`", ",", "0.24738538002453095`", ",", 
+   "0.24768016303079468`"}], "}"}]], "Output"],
+
+Cell[BoxData["0.24716017615328617`"], "Output"],
+
+Cell[BoxData["0.00030222880692579423`"], "Output"],
+
+Cell[BoxData["0.0012228054358496454`"], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["10", 
+    RowBox[{"5", " "}]], TraditionalForm]]],
+ "D/H"
+}], "Text",
+ CellChangeTimes->{{3.72266569213031*^9, 3.722665695075553*^9}, {
+  3.72266576523053*^9, 3.722665766943592*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"Quantile", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"10", "^", "5"}], 
+    RowBox[{
+     RowBox[{"TMC", "[", 
+      RowBox[{"[", 
+       RowBox[{"KeyVal", "[", "\"\<d\>\"", "]"}], "]"}], "]"}], "/", 
+     RowBox[{"TMC", "[", 
+      RowBox[{"[", 
+       RowBox[{"KeyVal", "[", "\"\<p\>\"", "]"}], "]"}], "]"}]}]}], ",", 
+   RowBox[{"{", 
+    RowBox[{"0.02275", ",", "0.15865", ",", "0.5", ",", 
+     RowBox[{"1", "-", "0.15865"}], ",", 
+     RowBox[{"1", "-", "0.02275"}]}], "}"}]}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"Mean", "[", 
+  RowBox[{
+   RowBox[{"10", "^", "5"}], 
+   RowBox[{
+    RowBox[{"TMC", "[", 
+     RowBox[{"[", 
+      RowBox[{"KeyVal", "[", "\"\<d\>\"", "]"}], "]"}], "]"}], "/", 
+    RowBox[{"TMC", "[", 
+     RowBox[{"[", 
+      RowBox[{"KeyVal", "[", "\"\<p\>\"", "]"}], "]"}], "]"}]}]}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{"StandardDeviation", "[", 
+  RowBox[{
+   RowBox[{"10", "^", "5"}], 
+   RowBox[{
+    RowBox[{"TMC", "[", 
+     RowBox[{"[", 
+      RowBox[{"KeyVal", "[", "\"\<d\>\"", "]"}], "]"}], "]"}], "/", 
+    RowBox[{"TMC", "[", 
+     RowBox[{"[", 
+      RowBox[{"KeyVal", "[", "\"\<p\>\"", "]"}], "]"}], "]"}]}]}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"StandardDeviation", "[", 
+   RowBox[{
+    RowBox[{"10", "^", "5"}], 
+    RowBox[{
+     RowBox[{"TMC", "[", 
+      RowBox[{"[", 
+       RowBox[{"KeyVal", "[", "\"\<d\>\"", "]"}], "]"}], "]"}], "/", 
+     RowBox[{"TMC", "[", 
+      RowBox[{"[", 
+       RowBox[{"KeyVal", "[", "\"\<p\>\"", "]"}], "]"}], "]"}]}]}], "]"}], 
+  "/", "%%"}]}], "Input",
+ CellChangeTimes->{{3.718614317574994*^9, 3.718614398572309*^9}, {
+   3.718614504035223*^9, 3.718614606604792*^9}, {3.718615027768271*^9, 
+   3.718615033767117*^9}, {3.718615536570558*^9, 3.718615551373595*^9}, {
+   3.720756890051557*^9, 3.720756927798401*^9}, {3.7207569598996162`*^9, 
+   3.7207569771456003`*^9}, {3.72199140947611*^9, 3.72199144895218*^9}, {
+   3.722665681351499*^9, 3.722665702279749*^9}, {3.725260706413557*^9, 
+   3.7252607316403847`*^9}, 3.7253384411547947`*^9}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+  "2.4125147381661614`", ",", "2.424619126399467`", ",", "2.469553130921693`",
+    ",", "2.496610159790127`", ",", "2.501493468694784`"}], "}"}]], "Output"],
+
+Cell[BoxData["2.4681043620227245`"], "Output"],
+
+Cell[BoxData["0.03156198594685273`"], "Output"],
+
+Cell[BoxData["0.0127879462605002`"], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["10", 
+    RowBox[{"5", " "}]], TraditionalForm]]],
+ " He3/H"
+}], "Text",
+ CellChangeTimes->{{3.722665709366016*^9, 3.722665714662524*^9}, {
+  3.722665769781837*^9, 3.722665770236916*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"Quantile", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"10", "^", "5"}], 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"TMC", "[", 
+        RowBox[{"[", 
+         RowBox[{"KeyVal", "[", "\"\<He3\>\"", "]"}], "]"}], "]"}], "+", 
+       RowBox[{"TMC", "[", 
+        RowBox[{"[", 
+         RowBox[{"KeyVal", "[", "\"\<t\>\"", "]"}], "]"}], "]"}]}], ")"}], 
+     "/", 
+     RowBox[{"TMC", "[", 
+      RowBox[{"[", 
+       RowBox[{"KeyVal", "[", "\"\<p\>\"", "]"}], "]"}], "]"}]}]}], ",", 
+   RowBox[{"{", 
+    RowBox[{"0.02275", ",", "0.15865", ",", "0.5", ",", 
+     RowBox[{"1", "-", "0.15865"}], ",", 
+     RowBox[{"1", "-", "0.02275"}]}], "}"}]}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"Mean", "[", 
+  RowBox[{
+   RowBox[{"10", "^", "5"}], 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"TMC", "[", 
+       RowBox[{"[", 
+        RowBox[{"KeyVal", "[", "\"\<He3\>\"", "]"}], "]"}], "]"}], "+", 
+      RowBox[{"TMC", "[", 
+       RowBox[{"[", 
+        RowBox[{"KeyVal", "[", "\"\<t\>\"", "]"}], "]"}], "]"}]}], ")"}], "/", 
+    RowBox[{"TMC", "[", 
+     RowBox[{"[", 
+      RowBox[{"KeyVal", "[", "\"\<p\>\"", "]"}], "]"}], "]"}]}]}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{"StandardDeviation", "[", 
+  RowBox[{
+   RowBox[{"10", "^", "5"}], 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"TMC", "[", 
+       RowBox[{"[", 
+        RowBox[{"KeyVal", "[", "\"\<He3\>\"", "]"}], "]"}], "]"}], "+", 
+      RowBox[{"TMC", "[", 
+       RowBox[{"[", 
+        RowBox[{"KeyVal", "[", "\"\<t\>\"", "]"}], "]"}], "]"}]}], ")"}], "/", 
+    RowBox[{"TMC", "[", 
+     RowBox[{"[", 
+      RowBox[{"KeyVal", "[", "\"\<p\>\"", "]"}], "]"}], "]"}]}]}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"StandardDeviation", "[", 
+   RowBox[{
+    RowBox[{"10", "^", "5"}], 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"TMC", "[", 
+        RowBox[{"[", 
+         RowBox[{"KeyVal", "[", "\"\<He3\>\"", "]"}], "]"}], "]"}], "+", 
+       RowBox[{"TMC", "[", 
+        RowBox[{"[", 
+         RowBox[{"KeyVal", "[", "\"\<t\>\"", "]"}], "]"}], "]"}]}], ")"}], 
+     "/", 
+     RowBox[{"TMC", "[", 
+      RowBox[{"[", 
+       RowBox[{"KeyVal", "[", "\"\<p\>\"", "]"}], "]"}], "]"}]}]}], "]"}], 
+  "/", "%%"}]}], "Input",
+ CellChangeTimes->{{3.718614317574994*^9, 3.718614398572309*^9}, {
+   3.718614504035223*^9, 3.718614606604792*^9}, {3.718615027768271*^9, 
+   3.718615033767117*^9}, {3.718615536570558*^9, 3.718615551373595*^9}, {
+   3.720756890051557*^9, 3.720756927798401*^9}, {3.7207569598996162`*^9, 
+   3.7207569771456003`*^9}, {3.72199140947611*^9, 3.72199144895218*^9}, {
+   3.722665681351499*^9, 3.722665721742401*^9}, {3.7252607373026037`*^9, 
+   3.725260737461555*^9}, 3.7253384452490892`*^9}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+  "1.045343937000253`", ",", "1.0554401023004971`", ",", "1.075989925909258`",
+    ",", "1.0923102207389161`", ",", "1.0976507767931294`"}], 
+  "}"}]], "Output"],
+
+Cell[BoxData["1.0740091724746628`"], "Output"],
+
+Cell[BoxData["0.016670118539158153`"], "Output"],
+
+Cell[BoxData["0.015521393081539462`"], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["10", 
+    RowBox[{"10", " "}]], TraditionalForm]]],
+ "Li7/H"
+}], "Text",
+ CellChangeTimes->{{3.722665723759695*^9, 3.722665727779851*^9}, {
+  3.722665771452937*^9, 3.7226657740129137`*^9}, {3.7252607666536703`*^9, 
+  3.725260767068791*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"Quantile", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"10", "^", "10"}], 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"TMC", "[", 
+        RowBox[{"[", 
+         RowBox[{"KeyVal", "[", "\"\<Li7\>\"", "]"}], "]"}], "]"}], "+", 
+       RowBox[{"TMC", "[", 
+        RowBox[{"[", 
+         RowBox[{"KeyVal", "[", "\"\<Be7\>\"", "]"}], "]"}], "]"}]}], ")"}], 
+     "/", 
+     RowBox[{"TMC", "[", 
+      RowBox[{"[", 
+       RowBox[{"KeyVal", "[", "\"\<p\>\"", "]"}], "]"}], "]"}]}]}], ",", 
+   RowBox[{"{", 
+    RowBox[{"0.02275", ",", "0.15865", ",", "0.5", ",", 
+     RowBox[{"1", "-", "0.15865"}], ",", 
+     RowBox[{"1", "-", "0.02275"}]}], "}"}]}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"Mean", "[", 
+  RowBox[{
+   RowBox[{"10", "^", "10"}], 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"TMC", "[", 
+       RowBox[{"[", 
+        RowBox[{"KeyVal", "[", "\"\<Li7\>\"", "]"}], "]"}], "]"}], "+", 
+      RowBox[{"TMC", "[", 
+       RowBox[{"[", 
+        RowBox[{"KeyVal", "[", "\"\<Be7\>\"", "]"}], "]"}], "]"}]}], ")"}], 
+    "/", 
+    RowBox[{"TMC", "[", 
+     RowBox[{"[", 
+      RowBox[{"KeyVal", "[", "\"\<p\>\"", "]"}], "]"}], "]"}]}]}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{"StandardDeviation", "[", 
+  RowBox[{
+   RowBox[{"10", "^", "10"}], 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"TMC", "[", 
+       RowBox[{"[", 
+        RowBox[{"KeyVal", "[", "\"\<Li7\>\"", "]"}], "]"}], "]"}], "+", 
+      RowBox[{"TMC", "[", 
+       RowBox[{"[", 
+        RowBox[{"KeyVal", "[", "\"\<Be7\>\"", "]"}], "]"}], "]"}]}], ")"}], 
+    "/", 
+    RowBox[{"TMC", "[", 
+     RowBox[{"[", 
+      RowBox[{"KeyVal", "[", "\"\<p\>\"", "]"}], "]"}], "]"}]}]}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"StandardDeviation", "[", 
+   RowBox[{
+    RowBox[{"10", "^", "10"}], 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"TMC", "[", 
+        RowBox[{"[", 
+         RowBox[{"KeyVal", "[", "\"\<Li7\>\"", "]"}], "]"}], "]"}], "+", 
+       RowBox[{"TMC", "[", 
+        RowBox[{"[", 
+         RowBox[{"KeyVal", "[", "\"\<Be7\>\"", "]"}], "]"}], "]"}]}], ")"}], 
+     "/", 
+     RowBox[{"TMC", "[", 
+      RowBox[{"[", 
+       RowBox[{"KeyVal", "[", "\"\<p\>\"", "]"}], "]"}], "]"}]}]}], "]"}], 
+  "/", "%%"}]}], "Input",
+ CellChangeTimes->{{3.718614317574994*^9, 3.718614398572309*^9}, {
+   3.718614504035223*^9, 3.718614606604792*^9}, {3.718615027768271*^9, 
+   3.718615033767117*^9}, {3.718615536570558*^9, 3.718615551373595*^9}, {
+   3.720756890051557*^9, 3.720756927798401*^9}, {3.7207569598996162`*^9, 
+   3.7207569771456003`*^9}, {3.72199140947611*^9, 3.72199144895218*^9}, {
+   3.722665681351499*^9, 3.722665734791814*^9}, {3.72274676130803*^9, 
+   3.722746768206849*^9}, {3.725260771756585*^9, 3.725260772104712*^9}, 
+   3.725338448182941*^9}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+  "5.307936996265377`", ",", "5.413503523346019`", ",", "5.552890051272731`", 
+   ",", "5.798720799414308`", ",", "5.947033690328012`"}], "}"}]], "Output"],
+
+Cell[BoxData["5.622937219525857`"], "Output"],
+
+Cell[BoxData["0.20598238446740047`"], "Output"],
+
+Cell[BoxData["0.03663252432414131`"], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["10", 
+    RowBox[{"14", " "}]], TraditionalForm]]],
+ "Li6/H"
+}], "Text",
+ CellChangeTimes->{{3.7226657367497587`*^9, 3.722665740852742*^9}, {
+  3.722665776425496*^9, 3.722665778675914*^9}, {3.7252607647402773`*^9, 
+  3.725260764994872*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"Quantile", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"10", "^", "14"}], 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"TMC", "[", 
+       RowBox[{"[", 
+        RowBox[{"KeyVal", "[", "\"\<Li6\>\"", "]"}], "]"}], "]"}], ")"}], "/", 
+     RowBox[{"TMC", "[", 
+      RowBox[{"[", 
+       RowBox[{"KeyVal", "[", "\"\<p\>\"", "]"}], "]"}], "]"}]}]}], ",", 
+   RowBox[{"{", 
+    RowBox[{"0.02275", ",", "0.15865", ",", "0.5", ",", 
+     RowBox[{"1", "-", "0.15865"}], ",", 
+     RowBox[{"1", "-", "0.02275"}]}], "}"}]}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"Mean", "[", 
+  RowBox[{
+   RowBox[{"10", "^", "14"}], 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"TMC", "[", 
+      RowBox[{"[", 
+       RowBox[{"KeyVal", "[", "\"\<Li6\>\"", "]"}], "]"}], "]"}], ")"}], "/", 
+    
+    RowBox[{"TMC", "[", 
+     RowBox[{"[", 
+      RowBox[{"KeyVal", "[", "\"\<p\>\"", "]"}], "]"}], "]"}]}]}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"StandardDeviation", "[", 
+   RowBox[{
+    RowBox[{"10", "^", "14"}], 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"TMC", "[", 
+       RowBox[{"[", 
+        RowBox[{"KeyVal", "[", "\"\<Li6\>\"", "]"}], "]"}], "]"}], ")"}], "/", 
+     RowBox[{"TMC", "[", 
+      RowBox[{"[", 
+       RowBox[{"KeyVal", "[", "\"\<p\>\"", "]"}], "]"}], "]"}]}]}], "]"}], 
+  "/", "%"}]}], "Input",
+ CellChangeTimes->{{3.718614317574994*^9, 3.718614398572309*^9}, {
+   3.718614504035223*^9, 3.718614606604792*^9}, {3.718615027768271*^9, 
+   3.718615033767117*^9}, {3.718615536570558*^9, 3.718615551373595*^9}, {
+   3.720756890051557*^9, 3.720756927798401*^9}, {3.7207569598996162`*^9, 
+   3.7207569771456003`*^9}, {3.72199140947611*^9, 3.72199144895218*^9}, {
+   3.722665681351499*^9, 3.722665748235643*^9}, {3.722746762546183*^9, 
+   3.722746766499034*^9}, 3.723954198833987*^9, 3.7253384518367653`*^9, 
+   3.725338784540807*^9}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+  "1.0351574252360536`", ",", "1.2320698303584077`", ",", 
+   "1.3988431085681068`", ",", "1.9447474223227452`", ",", 
+   "2.581666208632635`"}], "}"}]], "Output"],
+
+Cell[BoxData["1.5553684696336103`"], "Output"],
+
+Cell[BoxData["0.28244683670328274`"], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["10", 
+    RowBox[{"15", " "}]], TraditionalForm]]],
+ "CNO/H"
+}], "Text",
+ CellChangeTimes->{{3.722665749945917*^9, 3.722665782635705*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"Quantile", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"10", "^", "15"}], 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"Plus", "@@", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"TMC", "[", 
+           RowBox[{"[", 
+            RowBox[{"KeyVal", "[", "#", "]"}], "]"}], "]"}], "&"}], "/@", 
+         "CNONuclei"}], ")"}]}], ")"}], "/", 
+     RowBox[{"TMC", "[", 
+      RowBox[{"[", 
+       RowBox[{"KeyVal", "[", "\"\<p\>\"", "]"}], "]"}], "]"}]}]}], ",", 
+   RowBox[{"{", 
+    RowBox[{"0.02275", ",", "0.15865", ",", "0.5", ",", 
+     RowBox[{"1", "-", "0.15865"}], ",", 
+     RowBox[{"1", "-", "0.02275"}]}], "}"}]}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"Mean", "[", 
+  RowBox[{
+   RowBox[{"10", "^", "15"}], 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"Plus", "@@", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"TMC", "[", 
+          RowBox[{"[", 
+           RowBox[{"KeyVal", "[", "#", "]"}], "]"}], "]"}], "&"}], "/@", 
+        "CNONuclei"}], ")"}]}], ")"}], "/", 
+    RowBox[{"TMC", "[", 
+     RowBox[{"[", 
+      RowBox[{"KeyVal", "[", "\"\<p\>\"", "]"}], "]"}], "]"}]}]}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"StandardDeviation", "[", 
+   RowBox[{
+    RowBox[{"10", "^", "15"}], 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"Plus", "@@", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"TMC", "[", 
+           RowBox[{"[", 
+            RowBox[{"KeyVal", "[", "#", "]"}], "]"}], "]"}], "&"}], "/@", 
+         "CNONuclei"}], ")"}]}], ")"}], "/", 
+     RowBox[{"TMC", "[", 
+      RowBox[{"[", 
+       RowBox[{"KeyVal", "[", "\"\<p\>\"", "]"}], "]"}], "]"}]}]}], "]"}], 
+  "/", "%"}]}], "Input",
+ CellChangeTimes->{{3.718614317574994*^9, 3.718614398572309*^9}, {
+   3.718614504035223*^9, 3.718614606604792*^9}, {3.718615027768271*^9, 
+   3.718615033767117*^9}, {3.718615536570558*^9, 3.718615551373595*^9}, {
+   3.720756890051557*^9, 3.720756927798401*^9}, {3.7207569598996162`*^9, 
+   3.7207569771456003`*^9}, {3.72199140947611*^9, 3.72199144895218*^9}, {
+   3.722665681351499*^9, 3.722665761935495*^9}, 3.725338454954644*^9, 
+   3.725338848309835*^9}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+  "0.023749886875144267`", ",", "0.052396227837126975`", ",", 
+   "0.5636707359518991`", ",", "1.5308882039274465`", ",", 
+   "1.5469622992582408`"}], "}"}]], "Output"],
+
+Cell[BoxData["0.7786694682051694`"], "Output"],
+
+Cell[BoxData["0.772658943094837`"], "Output"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1304, 723},
+WindowMargins->{{261, Automatic}, {Automatic, 0}},
+PrintingCopies->1,
+PrintingPageRange->{1, Automatic},
+PrintPrecision->8,
+FrontEndVersion->"10.4 for Mac OS X x86 (32-bit, 64-bit Kernel) (April 11, \
+2016)",
+StyleDefinitions->"Default.nb"
+]
+
