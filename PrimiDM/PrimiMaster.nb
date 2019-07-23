@@ -1,0 +1,306 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 11.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     10335,        298]
+NotebookOptionsPosition[      8895,        246]
+NotebookOutlinePosition[      9258,        262]
+CellTagsIndexPosition[      9215,        259]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["PrimiMaster", "Title",
+ CellChangeTimes->{{3.772866992255372*^9, 3.7728670085361977`*^9}, {
+  3.772876349534109*^9, 3.772876350372448*^9}},
+ TextAlignment->Center,
+ Background->RGBColor[1, 0.925, 0.925]],
+
+Cell[TextData[{
+ "Runs both ",
+ StyleBox["PrimiCosmo",
+  FontWeight->"Bold"],
+ " and ",
+ StyleBox["PrimiNuc",
+  FontWeight->"Bold"],
+ " in one script, with example output."
+}], "Text",
+ CellDingbat->"\[FivePointedStar]",
+ CellChangeTimes->{{3.772867030462081*^9, 3.77286708171566*^9}, {
+  3.772867295829935*^9, 3.772867317788845*^9}, {3.772867786572171*^9, 
+  3.772867794102057*^9}, {3.772867867136854*^9, 3.772867884228609*^9}, {
+  3.77286792891523*^9, 3.7728679634007893`*^9}, {3.772876353595737*^9, 
+  3.772876374730205*^9}},
+ Background->RGBColor[0.87, 0.94, 1]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"SetDirectory", "[", 
+   RowBox[{"NotebookDirectory", "[", "]"}], "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Print", "[", 
+  RowBox[{"\"\<[PrimiMaster]: The current Directory is \>\"", ",", 
+   RowBox[{"Directory", "[", "]"}]}], "]"}]}], "Input",
+ CellChangeTimes->{{3.772876399784254*^9, 3.772876439633222*^9}}],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"[PrimiMaster]: The current Directory is \"\>", 
+   "\[InvisibleSpace]", "\<\"/Users/james/WIMP_BBN/PrimiDM\"\>"}],
+  SequenceForm[
+  "[PrimiMaster]: The current Directory is ", "/Users/james/WIMP_BBN/PrimiDM"],
+  Editable->False]], "Print",
+ CellChangeTimes->{3.77288198860538*^9, 3.772882221393236*^9, 
+  3.772882357902088*^9, 3.7728825199627457`*^9}]
+}, Open  ]],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"$EvolutionType", "=", " ", "\"\<Neff\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"\[CapitalDelta]Neffective", " ", "=", " ", "1.0"}], 
+  ";"}]}], "Input",
+ CellChangeTimes->{{3.7728823147950783`*^9, 3.772882332421174*^9}, {
+  3.772882897172263*^9, 3.772882898358947*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"<<", " ", "PrimiCosmo.m"}]], "Input",
+ CellChangeTimes->{{3.772876445569828*^9, 3.772876452074588*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["\<\"[PrimiCosmo]: Setting up options\"\>"], "Print",
+ CellChangeTimes->{3.7728819964942627`*^9, 3.772882221494526*^9, 
+  3.7728823582283*^9, 3.77288252007372*^9}],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"[PrimiCosmo]: The current Directory is \"\>", 
+   "\[InvisibleSpace]", "\<\"/Users/james/WIMP_BBN/PrimiDM\"\>"}],
+  SequenceForm[
+  "[PrimiCosmo]: The current Directory is ", "/Users/james/WIMP_BBN/PrimiDM"],
+  
+  Editable->False]], "Print",
+ CellChangeTimes->{3.7728819964942627`*^9, 3.772882221494526*^9, 
+  3.7728823582283*^9, 3.772882520109453*^9}],
+
+Cell[BoxData["\<\"[PrimiCosmo]: Integrating the Cosmology\"\>"], "Print",
+ CellChangeTimes->{3.7728819964942627`*^9, 3.772882221494526*^9, 
+  3.7728823582283*^9, 3.772882523302965*^9}],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"\\!\\(\\*SubscriptBox[\\(N\\), \\(eff\\)]\\) = \"\>", 
+   "\[InvisibleSpace]", "4.04498724485873`"}],
+  SequenceForm["\!\(\*SubscriptBox[\(N\), \(eff\)]\) = ", 4.04498724485873],
+  Editable->False]], "Print",
+ CellChangeTimes->{3.7728819964942627`*^9, 3.772882221494526*^9, 
+  3.7728823582283*^9, 3.772882583889803*^9}],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"z\[Gamma] = \"\>", "\[InvisibleSpace]", "1.3978918763255515`"}],
+  SequenceForm["z\[Gamma] = ", 1.3978918763255515`],
+  Editable->False]], "Print",
+ CellChangeTimes->{3.7728819964942627`*^9, 3.772882221494526*^9, 
+  3.7728823582283*^9, 3.772882583929874*^9}],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"z\[Nu] = \"\>", "\[InvisibleSpace]", "1.0014205856205556`"}],
+  SequenceForm["z\[Nu] = ", 1.0014205856205556`],
+  Editable->False]], "Print",
+ CellChangeTimes->{3.7728819964942627`*^9, 3.772882221494526*^9, 
+  3.7728823582283*^9, 3.7728825839421186`*^9}],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"T\[Gamma]/T\[Nu] = \"\>", "\[InvisibleSpace]", 
+   "1.3959088682596958`"}],
+  SequenceForm["T\[Gamma]/T\[Nu] = ", 1.3959088682596958`],
+  Editable->False]], "Print",
+ CellChangeTimes->{3.7728819964942627`*^9, 3.772882221494526*^9, 
+  3.7728823582283*^9, 3.772882583980796*^9}],
+
+Cell[BoxData["\<\"[PrimiCosmo]: Computing Weak rates\"\>"], "Print",
+ CellChangeTimes->{3.7728819964942627`*^9, 3.772882221494526*^9, 
+  3.7728823582283*^9, 3.772882586320215*^9}],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"[PrimiCosmo]: Completed. Total Time - \"\>", 
+   "\[InvisibleSpace]", "69", "\[InvisibleSpace]", "\<\" seconds\"\>"}],
+  SequenceForm["[PrimiCosmo]: Completed. Total Time - ", 69, " seconds"],
+  Editable->False]], "Print",
+ CellChangeTimes->{3.7728819964942627`*^9, 3.772882221494526*^9, 
+  3.7728823582283*^9, 3.772882589453025*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"<<", " ", "PrimiNuc.m"}]], "Input",
+ CellChangeTimes->{{3.7728764561494703`*^9, 3.772876459174594*^9}, {
+  3.772883023198381*^9, 3.7728830330901823`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["\<\"[PrimiNuc]: Setting up options\"\>"], "Print",
+ CellChangeTimes->{3.7728820809153223`*^9, 3.772882266978224*^9, 
+  3.772882428158956*^9, 3.772882589534153*^9}],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"[PrimiNuc]: The current Directory is \"\>", 
+   "\[InvisibleSpace]", "\<\"/Users/james/WIMP_BBN/PrimiDM\"\>"}],
+  SequenceForm[
+  "[PrimiNuc]: The current Directory is ", "/Users/james/WIMP_BBN/PrimiDM"],
+  Editable->False]], "Print",
+ CellChangeTimes->{3.7728820809153223`*^9, 3.772882266978224*^9, 
+  3.772882428158956*^9, 3.772882589550383*^9}],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"[PrimiNuc]: \\!\\(\\*SubscriptBox[\\(\[CapitalOmega]\\), \\(b, \
+0\\)]\\)\\!\\(\\*SuperscriptBox[\\(h\\), \\(2\\)]\\) = \"\>", 
+   "\[InvisibleSpace]", "0.02225`"}],
+  SequenceForm[
+  "[PrimiNuc]: \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(b, \
+0\)]\)\!\(\*SuperscriptBox[\(h\), \(2\)]\) = ", 0.02225],
+  Editable->False]], "Print",
+ CellChangeTimes->{3.7728820809153223`*^9, 3.772882266978224*^9, 
+  3.772882428158956*^9, 3.77288258956419*^9}],
+
+Cell[BoxData["\<\"[PrimiNuc]: Defining reaction network\"\>"], "Print",
+ CellChangeTimes->{3.7728820809153223`*^9, 3.772882266978224*^9, 
+  3.772882428158956*^9, 3.772882589568677*^9}],
+
+Cell[BoxData["\<\"[PrimiNuc]: Integrating Cosmology\"\>"], "Print",
+ CellChangeTimes->{3.7728820809153223`*^9, 3.772882266978224*^9, 
+  3.772882428158956*^9, 3.772882595885104*^9}],
+
+Cell[BoxData["\<\"[PrimiNuc]: High Temperature Integration Complete\"\>"], \
+"Print",
+ CellChangeTimes->{3.7728820809153223`*^9, 3.772882266978224*^9, 
+  3.772882428158956*^9, 3.772882596361298*^9}],
+
+Cell[BoxData["\<\"[PrimiNuc]: Middle Temperature Integration Complete\"\>"], \
+"Print",
+ CellChangeTimes->{3.7728820809153223`*^9, 3.772882266978224*^9, 
+  3.772882428158956*^9, 3.77288260066875*^9}],
+
+Cell[BoxData["\<\"[PrimiNuc]: Low Temperature Integration Complete\"\>"], \
+"Print",
+ CellChangeTimes->{3.7728820809153223`*^9, 3.772882266978224*^9, 
+  3.772882428158956*^9, 3.7728826167787933`*^9}],
+
+Cell[BoxData["\<\"[PrimiNuc]: Results\"\>"], "Print",
+ CellChangeTimes->{3.7728820809153223`*^9, 3.772882266978224*^9, 
+  3.772882428158956*^9, 3.77288261679012*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"n\"\>", "9.155240041506695`*^-11"},
+    {"\<\"p\"\>", "0.740295384659737`"},
+    {"\<\"d\"\>", "0.000020665376498329315`"},
+    {"\<\"t\"\>", "6.742475166541965`*^-8"},
+    {"\<\"He3\"\>", "8.234369290346569`*^-6"},
+    {"\<\"a\"\>", "0.06490959410132292`"},
+    {"\<\"Li7\"\>", "2.579184149990327`*^-11"},
+    {"\<\"Be7\"\>", "3.613615294748785`*^-10"}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{3.7728820809153223`*^9, 3.772882266978224*^9, 
+  3.772882428158956*^9, 3.772882616825369*^9}],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"[PrimiNuc]: Completed. Total Time - \"\>", "\[InvisibleSpace]",
+    "27", "\[InvisibleSpace]", "\<\" seconds\"\>"}],
+  SequenceForm["[PrimiNuc]: Completed. Total Time - ", 27, " seconds"],
+  Editable->False]], "Print",
+ CellChangeTimes->{3.7728820809153223`*^9, 3.772882266978224*^9, 
+  3.772882428158956*^9, 3.772882616832643*^9}]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{808, 655},
+WindowMargins->{{Automatic, -605}, {Automatic, -950}},
+FrontEndVersion->"11.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (September \
+21, 2016)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 209, 4, 108, "Title"],
+Cell[792, 28, 566, 15, 46, "Text"],
+Cell[CellGroupData[{
+Cell[1383, 47, 355, 8, 54, "Input"],
+Cell[1741, 57, 401, 8, 24, "Print"]
+}, Open  ]],
+Cell[2157, 68, 325, 8, 54, "Input"],
+Cell[CellGroupData[{
+Cell[2507, 80, 127, 2, 32, "Input"],
+Cell[CellGroupData[{
+Cell[2659, 86, 176, 2, 24, "Print"],
+Cell[2838, 90, 401, 9, 24, "Print"],
+Cell[3242, 101, 184, 2, 24, "Print"],
+Cell[3429, 105, 368, 7, 24, "Print"],
+Cell[3800, 114, 307, 6, 24, "Print"],
+Cell[4110, 122, 303, 6, 24, "Print"],
+Cell[4416, 130, 325, 7, 24, "Print"],
+Cell[4744, 139, 179, 2, 24, "Print"],
+Cell[4926, 143, 382, 7, 24, "Print"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[5357, 156, 178, 3, 32, "Input"],
+Cell[CellGroupData[{
+Cell[5560, 163, 177, 2, 24, "Print"],
+Cell[5740, 167, 396, 8, 24, "Print"],
+Cell[6139, 177, 492, 10, 27, "Print"],
+Cell[6634, 189, 184, 2, 24, "Print"],
+Cell[6821, 193, 180, 2, 24, "Print"],
+Cell[7004, 197, 198, 3, 24, "Print"],
+Cell[7205, 202, 199, 3, 24, "Print"],
+Cell[7407, 207, 199, 3, 24, "Print"],
+Cell[7609, 212, 165, 2, 24, "Print"],
+Cell[7777, 216, 695, 16, 166, "Print"],
+Cell[8475, 234, 380, 7, 24, "Print"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
