@@ -21,11 +21,11 @@
 
 (* ::Input::Initialization:: *)
 SetDirectory[NotebookDirectory[]];
-mgdata=Import["QED_MEV/QED_P_int.cvs","Table",HeaderLines-> 1];
+mgdata=Import["QED_MeV/QED_P_int.cvs","Table",HeaderLines-> 1];
 mgPint=Interpolation[mgdata];
-mgdata2=Import["QED_MEV/QED_dP_intdT.cvs","Table",HeaderLines-> 1];
+mgdata2=Import["QED_MeV/QED_dP_intdT.cvs","Table",HeaderLines-> 1];
 mgdPintdT:=Interpolation[mgdata2];
-mgdata3=Import["QED_MEV/QED_d2P_intdT2.cvs","Table",HeaderLines-> 1];
+mgdata3=Import["QED_MeV/QED_d2P_intdT2.cvs","Table",HeaderLines-> 1];
 mgd2PintdT2:=Interpolation[mgdata3];
 
 
@@ -120,9 +120,14 @@ mgz\[Alpha]0=(2^(1/6) 7^(1/4) mggSMi^(1/3) \[CapitalDelta]Neff^(1/4))/(11^(1/3) 
 (*Print[mgz\[Alpha]0];*)
 (* Tnu ~= 0.01 MeV, a time at which e+e- have annihilated away *)
 
-solEarlyUniverse=NDSolve[{ 
+solEarlyUniverse=NDSolve[
+{ 
 z\[Gamma]'[a]==mgdz\[Gamma]da[mgz\[Alpha]0,z\[Gamma][a],z\[Nu][a],z\[Nu][a],0,0,0,a],z\[Nu]'[a]==1/3 (mgdz\[Nu]eda[mgz\[Alpha]0,z\[Gamma][a],z\[Nu][a],z\[Nu][a],0,0,0,a]+2mgdz\[Nu]\[Mu]da[mgz\[Alpha]0,z\[Gamma][a],z\[Nu][a],z\[Nu][a],0,0,0,a]),
-z\[Gamma][mga0]==1,z\[Nu][mga0]==1},{z\[Gamma],z\[Nu]},{a,mga0,mgamax},PrecisionGoal->8,AccuracyGoal->8];
+z\[Gamma][mga0]==1,z\[Nu][mga0]==1
+},
+{z\[Gamma],z\[Nu]},
+{a,mga0,mgamax},
+PrecisionGoal->8,AccuracyGoal->8];
 
 mgKtoMeV = 1/(11604.51812*10^6);
 mgMpl=1.2209 10^19 10^3;
@@ -134,10 +139,15 @@ mgTmin=0.00006;
 mgt0=1/(2 mgFAC mgHubble[T\[Nu]0 mgz\[Alpha]0,T\[Nu]0,T\[Nu]0,T\[Nu]0,0,0]);
 mgtmax=1/(2 mgFAC mgHubble[mgTmin mgz\[Alpha]0,1.4 mgTmin,mgTmin,mgTmin,0,0]);
 
-solEarlyUniverset=NDSolve[{ 
+solEarlyUniverset=NDSolve[
+{ 
 T\[Gamma]'[t]==mgdT\[Gamma]dt[T\[Alpha][t],T\[Gamma][t],T\[Nu][t],T\[Nu][t],0,0],T\[Nu]'[t]==mgdT\[Nu]dt[T\[Alpha][t],T\[Gamma][t],T\[Nu][t],T\[Nu][t],0,0],
 T\[Alpha]'[t]==mgdT\[Alpha]dt[T\[Alpha][t],T\[Gamma][t],T\[Nu][t],T\[Nu][t],0,0],
-T\[Gamma][t0]==T\[Nu]0,T\[Nu][t0]==T\[Nu]0,T\[Alpha][t0]==T\[Nu]0*mgz\[Alpha]0},{T\[Gamma],T\[Nu],T\[Alpha]},{t,mgt0,mgtmax},PrecisionGoal->8,AccuracyGoal->8];
+T\[Gamma][t0]==T\[Nu]0,T\[Nu][t0]==T\[Nu]0,T\[Alpha][t0]==T\[Nu]0*mgz\[Alpha]0
+},
+{T\[Gamma],T\[Nu],T\[Alpha]},
+{t,mgt0,mgtmax},
+PrecisionGoal->8,AccuracyGoal->8];
 
 (*Compute all relevant stuff*)
 
