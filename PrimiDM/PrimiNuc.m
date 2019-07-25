@@ -50,13 +50,13 @@ dpTOHe3gFactor=1;
 (* ::Input::Initialization:: *)
 Meanh2\[CapitalOmega]b0Planck=0.02225;(*[Planck 2015 XIII TT and ET and EE]*)
 \[Sigma]h2\[CapitalOmega]b0Planck=0.00016;(* Standard deviation*)
-Print["[PrimiNuc]: \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(b, 0\)]\)\!\(\*SuperscriptBox[\(h\), \(2\)]\) = ", Meanh2\[CapitalOmega]b0Planck]
 
 
 (* ::Input::Initialization:: *)
 Meanh2\[CapitalOmega]b0=Meanh2\[CapitalOmega]b0Planck; 
 \[Sigma]h2\[CapitalOmega]b0=\[Sigma]h2\[CapitalOmega]b0Planck;
-h2\[CapitalOmega]b0=Meanh2\[CapitalOmega]b0;
+(*h2\[CapitalOmega]b0=Meanh2\[CapitalOmega]b0;*)
+Print["[PrimiNuc]: \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(b, 0\)]\)\!\(\*SuperscriptBox[\(h\), \(2\)]\) = ", h2\[CapitalOmega]b0]
 
 
 (* ::Input::Initialization:: *)
@@ -1377,7 +1377,7 @@ Timing@Computetofa
 
 
 (* ::Input::Initialization:: *)
-Computeaoft:=(aoft=NDSolveValue[{av'[tv]==1/tofa'[av[tv]],av[tofa@a[Ti]]==a[Ti]},av,{tv,tofa@a[Ti],tofa@a[Tf]},PrecisionGoal->75,AccuracyGoal->20];)
+Computeaoft:=(aoft=NDSolveValue[{av'[tv]==1/tofa'[av[tv]],av[Re[tofa@a[Ti]]]==a[Ti]},av,{tv,Re[tofa@a[Ti]],Re[tofa@a[Tf]]},PrecisionGoal->75,AccuracyGoal->20];)
 
 
 Timing@Computeaoft
@@ -1431,10 +1431,10 @@ DefineEquations;//Timing
 
 
 (* ::Input::Initialization:: *)
-t0:=tofa@a[Tstart];
-tmiddle:=tofa@a[TMiddle];
-t18:=tofa@a[T18];
-tend:=tofa@a[Tend];
+t0:=Re[tofa@a[Tstart]];
+tmiddle:=Re[tofa@a[TMiddle]];
+t18:=Re[tofa@a[T18]];
+tend:=Re[tofa@a[Tend]];
 
 
 (* ::Input::Initialization:: *)

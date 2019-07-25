@@ -30,8 +30,9 @@ Print["[PrimiCosmo]: The current Directory is ", Directory[]]
 
 
 (* ::Input::Initialization:: *)
-$EvolutionType = "Neff"
-TnuStart = 30.0;
+(*$EvolutionType = "WIMP"*)
+(*\[CapitalDelta]Neffective = 1.0;*)
+(*TnuStart = 30.0;*)
 
 
 $InterpolateAnalytics=True;
@@ -505,7 +506,7 @@ If[$EvolutionType == "Neff",
 << smNeff.m;
 ]
 If[$EvolutionType == "WIMP",
-<< wimp.m;
+<< simple_wimp.m;
 ]
 
 
