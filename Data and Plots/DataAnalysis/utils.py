@@ -242,17 +242,24 @@ def chisqBBN(Yp, DoverH):
          + np.power(DoverH - DHCentre, 2)/(DHError**2 + DHErrorTh**2)
 
 def chisqCMB(OmegaB, Neff, Yp):
-    OmegaBCentre = 0.00223
+    OmegaBCentre = 0.02225
     NeffCentre = 2.89
     YpCentre = 0.246
+    dO = OmegaB - OmegaBCentre
+    dN = Neff - NeffCentre
+    dY = Yp - YpCentre
     rho12 = 0.40
     rho13 = 0.18
     rho23 = -0.69
-    Delta = np.array([0.00022, 0.31, 0.018])
-    M = np.array([[1, rho12, rho13], [rho12, 1, rho23], [rho13, rho23, 1]])
-    Sigma = np.dot(Delta, np.matmul(M, Delta))
-    return (1/Sigma)*(np.power(OmegaB - OmegaBCentre, 2) + np.power(Neff - NeffCentre, 2)) \
-                             + (1/Sigma)*np.power(Yp - YpCentre, 2)
+    Delta1 = 0.00022
+    Delta2 = 0.31
+    Delta3 = 0.018
+    SigmaCMB = np.array([[Delta1**2, Delta1*Delta2*rho12, Delta1*Delta3*rho13], 
+                         [Delta1*Delta2*rho12, Delta2**2, Delta2*Delta3*rho23], 
+                         [Delta1*Delta3*rho13, Delta2*Delta3*rho23, Delta3**2]])
+    inv = np.linalg.inv(SigmaCMB)
+    
+    return dO*dO*inv[0][0] + dN*dN*inv[1][1] + dY*dY*inv[2][2] + 2*dO*dN*inv[0][1] + 2*dO*dY*inv[0][2] + 2*dN*dY*inv[1][2]
 
 def chisqBBNandCMB(Yp, DoverH, OmegaB, Neff):
     return chisqBBN(Yp, DoverH) + chisqCMB(OmegaB, Neff, Yp)
