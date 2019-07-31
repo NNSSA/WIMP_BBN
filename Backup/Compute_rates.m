@@ -19,24 +19,8 @@
 
 
 
-(*Print["[PrimiCosmo]: Setting up options"]*)
-timingStart = AbsoluteTime[];
-
-
-SetDirectory[NotebookDirectory[]]
-
-
-(*Print["[PrimiCosmo]: The current Directory is ", Directory[]]*)
-
-
+(* ::Input::Initialization:: *)
 $InterpolateAnalytics=True;
-
-
-$HistoryLength = 10;
-
-
-$PaperPlots=False;
-$ResultsPlots=False;
 
 
 (* ::Input::Initialization:: *)
@@ -48,7 +32,7 @@ $BDFOrder=2;
 
 
 (* ::Input::Initialization:: *)
-PrecisionNDSolve=2;
+PrecisionNDSolve=2;(*TODO Put 2 here !!!! *)
 
 
 (* ::Input::Initialization:: *)
@@ -56,7 +40,7 @@ AccuracyNDSolve:=15+PrecisionNDSolve;
 
 
 (* ::Input::Initialization:: *)
-NTemperaturePoints=1200;
+NTemperaturePoints=1200; (*1000 is enough*)
 
 
 (* ::Input::Initialization:: *)
@@ -68,11 +52,29 @@ $FastPENRatesIntegrals=True;
 
 
 (* ::Input::Initialization:: *)
-$PENRatesIntegralsPoints=300;
+$PENRatesIntegralsPoints=300;(*200 is enough *)
 
 
 (* ::Input::Initialization:: *)
-$RecomputeWeakRates=False;
+TabulatedReactionsFile="BBNRatesAlainCoc2018.dat";
+NumberNuclearReactions=423;
+
+
+(* ::Input::Initialization:: *)
+MaximumNuclearMass=Infinity; 
+
+
+(* ::Input::Initialization:: *)
+$RandomNuclearRates=False;
+$MaxVariationRate=1000;
+
+
+(* ::Input::Initialization:: *)
+dpTOHe3gFactor=1;
+
+
+(* ::Input::Initialization:: *)
+$RecomputeWeakRates=True;
 $ParallelWeakRates=True;
 
 
@@ -127,8 +129,8 @@ Tend=6.*10^7 Kelvin;
 
 
 (* ::Input::Initialization:: *)
-Ti=10^11 Kelvin;
-Tf=6.*10^7 Kelvin;
+Ti=10^12 Kelvin;
+Tf=10^7 Kelvin;
 LogTi=1.Log10[Ti];
 LogTf=1.Log10[Tf]; 
 
@@ -191,7 +193,7 @@ gA=1.2723;
 
 (* ::Input::Initialization:: *)
 fWM=3.7058/2(*1.853*); (* Weak magnetism see 1212.0332*)
-radiusproton=0.841*10^-15 meter; (*(arXiv:1212.0332)*)
+radiusproton=0.841*10^-15 meter (*(arXiv:1212.0332)*)
 
 
 (* ::Input::Initialization:: *)
@@ -210,6 +212,10 @@ Subscript[m, Z]=91.1876 GeV;
 
 
 (* ::Input::Initialization:: *)
+Q/MeV
+
+
+(* ::Input::Initialization:: *)
 pc=3.0856777807 10^16 meter; (* The parsec *)
 Mpc=Mega pc;
 H0=100 h km/second/Mpc; (* Hubble constant today *)
@@ -217,12 +223,12 @@ H100=100 km/second/Mpc;(*Fake Hubble rate given by 100 km/s/Mpc so that h = H0/H
 
 
 (* ::Input::Initialization:: *)
-Subscript[\[Rho], crit]=3./(8\[Pi] GN) (H0)^2 ;(* in g cm^-3 by construction *)
-\[Rho]crit100=3./(8\[Pi] GN) (H100)^2; (* in g cm^-3 by construction *)
+Subscript[\[Rho], crit]=3./(8\[Pi] GN) (H0)^2 (* in g cm^-3 by construction *)
+\[Rho]crit100=(3./(8\[Pi] GN)) ((H100)^2) (* in g cm^-3 by construction *)
 
 
 (* ::Input::Initialization:: *)
-Mean\[Tau]neutron:=879.5;(*880.2second+-1.1s was previous value from PDG2017 *);
+Mean\[Tau]neutron:=879.5(*880.2second+-1.1s was previous value from PDG2017 *);
 (* Now we use 1712.05663 Section 11 which includes recente 2017 measurements.*)
 \[Sigma]\[Tau]neutron:=0.8 second;
 \[Tau]neutron=Mean\[Tau]neutron;
@@ -248,7 +254,7 @@ SuperscriptBox[\(y\), \(2\)], \((
 
 
 (* ::Input::Initialization:: *)
-Nneu:=NeutrinosGenerations*(\[Rho]FD[\[Xi]\[Nu]]+\[Rho]FD[-\[Xi]\[Nu]])/(2\[Rho]FDNonDegenerate);
+Nneu:=NeutrinosGenerations*(\[Rho]FD[\[Xi]\[Nu]]+\[Rho]FD[-\[Xi]\[Nu]])/(2\[Rho]FDNonDegenerate)
 
 
 (* ::Input::Initialization:: *)
@@ -269,9 +275,31 @@ h:=0.6727; (*+-0.0066 *)(*[Planck 2015 XIII]*)
 
 
 (* ::Input::Initialization:: *)
+Meanh2\[CapitalOmega]b0Planck=0.02225;(*[Planck 2015 XIII TT and ET and EE]*)
+\[Sigma]h2\[CapitalOmega]b0Planck=0.00016;(* Standard deviation*)
+
+
+(* ::Input::Initialization:: *)
+Meanh2\[CapitalOmega]b0=Meanh2\[CapitalOmega]b0Planck; 
+\[Sigma]h2\[CapitalOmega]b0=\[Sigma]h2\[CapitalOmega]b0Planck;
+h2\[CapitalOmega]b0=Meanh2\[CapitalOmega]b0;
+
+
+(* ::Input::Initialization:: *)
+ReSetCosmology:=(
+Meanh2\[CapitalOmega]b0=Meanh2\[CapitalOmega]b0Planck; 
+NeutrinosGenerations=3;
+);
+
+
+(* ::Input::Initialization:: *)
 Meanh2\[CapitalOmega]c0=0.1198;(* [Planck 2015 XIII]*)
 \[Sigma]h2\[CapitalOmega]c0=0.0015;
 h2\[CapitalOmega]c0=Meanh2\[CapitalOmega]c0;
+
+
+(* ::Input::Initialization:: *)
+1-(h2\[CapitalOmega]b0+h2\[CapitalOmega]c0)/h^2
 
 
 (* ::Input::Initialization:: *)
@@ -294,6 +322,48 @@ Subscript[\[CapitalOmega], \[Gamma]0]:=Subscript[\[Rho], CMB0]/Subscript[\[Rho],
 
 (* ::Input::Initialization:: *)
 Subscript[\[CapitalOmega], \[Nu]0]:=Nneu*7/8*(FourOverEleven)^(1/3) Subscript[\[CapitalOmega], \[Gamma]0];
+
+
+(* ::Input::Initialization:: *)
+ma = 931.494061 MeV;(* Audi2012 *)
+He4Overma=4.0026032541; (* Audi2012 *)
+H1Overma=1.00782503223; (* Audi2012 *)  
+
+
+(* ::Input::Initialization:: *)
+Subscript[x, He4]=0.24709 ;(* Chemical composition at the end of BBN. In principle one should account for He4 produced by stars...*)
+Subscript[x, H1]=1-Subscript[x, He4];
+mbaryon0=(Subscript[x, H1]H1Overma+Subscript[x, He4]He4Overma/4)ma;
+
+
+(* ::Input::Initialization:: *)
+\[Rho]B0 :=h2\[CapitalOmega]b0*\[Rho]crit100;
+
+
+(* ::Input::Initialization:: *)
+nbaryons0:=\[Rho]B0 /(mbaryon0/(clight)^2)
+
+
+(* ::Input::Initialization:: *)
+nbaryons0/Subscript[n, CMB0]
+
+
+(* ::Input::Initialization:: *)
+\[CapitalOmega]bh2Over\[Eta]:=Subscript[n, CMB0]/\[Rho]crit100 mbaryon0/(clight)^2
+
+
+(* ::Input::Initialization:: *)
+\[Eta]factor:=h2\[CapitalOmega]b0/\[CapitalOmega]bh2Over\[Eta]
+
+
+(* ::Input::Initialization:: *)
+\[Rho]B[av_]:=\[Rho]B0 /av^3;
+nB[av_]:=nbaryons0 /av^3;
+
+
+(* ::Input::Initialization:: *)
+$CorrectBaryonsEnergyDensityinBBNRRates=True;
+\[Rho]BForBBN[av_]:=\[Rho]B[av]If[$CorrectBaryonsEnergyDensityinBBNRRates,ma/mbaryon0,1];(* This is Eq. C8 of the companion paper *)
 
 
 (* ::Input::Initialization:: *)
@@ -386,6 +456,7 @@ dmg2Tab=Check[Import["Interpolations/dmg2.dat","TSV"],Print["Precomputed data no
 
 
 (* ::Input::Initialization:: *)
+
 Timing[If[dme2Tab==$Failed||dmg2Tab==$Failed||$RecomputePlasmaCorrections,
 
 dme2Tab=Table[{T,dme2[T]},{T,ListT}];
@@ -490,25 +561,163 @@ DSTN[T_?NumericQ]=Which[T<Tf,1,T<=Ti ,DST[T],T>Ti,DST[Ti]];
 D\[Rho]TNoQED=MyInterpolation@Table[{T,With[{x=me/(kB T)},30/\[Pi]^4 (Imn[1][2,1][x])]},{T,ListT}];D\[Rho]T[T_]:=If[$QEDPlasmaCorrections,dg\[Rho]N[T]/2,0]+D\[Rho]TNoQED[T];
 
 
-(*Print["[PrimiCosmo]: Integrating the Cosmology"]*)
+(* ::Input::Initialization:: *)
+Listnl={-10.21703221236002,61.24438067531452,-340.3323864212157,1057.2707914654834,-2045.577491331372,2605.9087171012848,-2266.1521815470196,1374.2623075963388,-586.0618273295763,174.87532902234145,-35.715878215468045,4.7538967685808755,-0.3713438862054167,0.012908416591272199};
 
-
-If[$EvolutionType == "SBBN",
-SomeFunc[TmgStart];
-]
-If[$EvolutionType == "Neff",
-SomeFunc[TmgStart,\[CapitalDelta]Neffective];
-]
-If[$EvolutionType == "WIMP",
-SomeFunc[TmgStart,CASE,SPIN,gDM,MDM,\[Sigma]v,BR];
-]
+\[ScriptCapitalN][z_]:=If[z>=4,0,Exp[Plus@@Table[Listnl[[i+1]]z^i,{i,0,13}]]]
 
 
 (* ::Input::Initialization:: *)
-T\[Nu]overTTable = Table[{T\[Nu]overT[ListT[[i]]], ListT[[i]]},{i,1,Length[ListT]}];
+\[ScriptCapitalN]T[Tv_]:= \[ScriptCapitalN][me/(kB Tv)];
+\[ScriptCapitalN]lT[lTv_]:= \[ScriptCapitalN][me/(kB Exp@lTv)];
 
 
-(*Print["[PrimiCosmo]: Computing Weak rates"]*)
+(* ::Input::Initialization:: *)
+DS2lTQED[lTv_]:=(2*2\[Pi]^2)/45 DSTQED[Exp@lTv];
+DST2QED[Tv_]:=(2*2\[Pi]^2)/45 DSTQED[Tv]
+
+DS2lTNoQED[lTv_]:=(2*2\[Pi]^2)/45 DSTNoQED[Exp@lTv];
+DST2NoQED[Tv_]:=(2*2\[Pi]^2)/45 DSTNoQED[Tv]
+
+
+
+(* ::Input::Initialization:: *)
+SolveaOFTwhenID:=(laTCQED=NDSolveValue[{laTCN'[lTv]==(\[ScriptCapitalN]lT[lTv]-DS2lTQED'[lTv])/(\[ScriptCapitalN]lT[lTv]+3*DS2lTQED[lTv]),laTCN[Log@Tf]==Log[TCMB0/DSTQED[Tf]^(1/3)]},{laTCN},{lTv,Log@Ti,Log@Tf},PrecisionGoal->40,AccuracyGoal->9][[1]];
+
+laTCNoQED=NDSolveValue[{laTCNNoQED'[lTv]==(\[ScriptCapitalN]lT[lTv]-DS2lTNoQED'[lTv])/(\[ScriptCapitalN]lT[lTv]+3*DS2lTNoQED[lTv]),laTCNNoQED[Log@Tf]==Log[TCMB0/DSTNoQED[Tf]^(1/3)]},{laTCNNoQED},{lTv,Log@Ti,Log@Tf},PrecisionGoal->40,AccuracyGoal->9][[1]];
+);
+
+
+(* ::Input::Initialization:: *)
+SolveaOFTwhenID
+
+
+(* ::Input::Initialization:: *)
+aTCQED[Tv_]:=Exp[laTCQED[Log@Tv]];
+aCQED[Tv_]:=aTCQED[Tv]/Tv;
+
+
+(* ::Input::Initialization:: *)
+aTCNoQED[Tv_]:=Exp[laTCNoQED[Log@Tv]];
+aCNoQED[Tv_]:=aTCNoQED[Tv]/Tv;
+
+
+(* ::Input::Initialization:: *)
+InvertaofTwhenID:=
+(TofaCQED=Interpolation@Table[{aCQED[T],T},{T,ListT}];
+TofaCNoQED=Interpolation@Table[{aCNoQED[T],T},{T,ListT}];
+
+aTofaCQED=Interpolation@Table[{aCQED[T],aTCQED[T]},{T,ListT}];
+aTofaCNoQED=Interpolation@Table[{aCNoQED[T],aTCNoQED[T]},{T,ListT}];
+);
+
+
+(* ::Input::Initialization:: *)
+InvertaofTwhenID
+
+
+(* ::Input::Initialization:: *)
+aC[T_]:=If[$QEDPlasmaCorrections,aCQED[T],aCNoQED[T]]
+
+
+(* ::Input::Initialization:: *)
+Solve\[Rho]\[Nu]OFawhenID:=(Timing[a4\[Rho]\[Nu]LogaQED=NDSolveValue[{bar\[Rho]aNQED'[lav]==1/(hbar^3 clight^5)(kB aTofaCQED[Exp@lav])^4 \[ScriptCapitalN]T[TofaCQED[Exp@lav]],bar\[Rho]aNQED[Log@aCQED@Ti]==aBB (kB aTCQED[Ti])^4 7/8 Nneu},{bar\[Rho]aNQED},{lav,Log[aCQED[Ti]],Log[aCQED[Tf]]},Method->"StiffnessSwitching",PrecisionGoal->12][[1]];];
+
+Timing[a4\[Rho]\[Nu]LogaNoQED=NDSolveValue[{bar\[Rho]aNNoQED'[lav]==1/(hbar^3 clight^5)(kB aTofaCNoQED[Exp@lav])^4 \[ScriptCapitalN]T[TofaCNoQED[Exp@lav]],bar\[Rho]aNNoQED[Log@aCNoQED@Ti]==aBB (kB aTCNoQED[Ti])^4 7/8 Nneu},{bar\[Rho]aNNoQED},{lav,Log[aCNoQED[Ti]],Log[aCNoQED[Tf]]},Method->"StiffnessSwitching",PrecisionGoal->12][[1]];];
+);
+
+
+(* ::Input::Initialization:: *)
+Solve\[Rho]\[Nu]OFawhenID
+
+
+(* ::Input::Initialization:: *)
+a4\[Rho]\[Nu]CQED[av_]:=a4\[Rho]\[Nu]LogaQED[Log@av];
+\[Rho]\[Nu]CQED[av_]:=a4\[Rho]\[Nu]CQED[av]/av^4;
+
+
+(* ::Input::Initialization:: *)
+
+a4\[Rho]\[Nu]CNoQED[av_]:=a4\[Rho]\[Nu]LogaNoQED[Log@av];
+\[Rho]\[Nu]CNoQED[av_]:=a4\[Rho]\[Nu]CNoQED[av]/av^4;
+
+
+(* ::Input::Initialization:: *)
+(*\[Rho]\[Nu]C[av_]:=If[$QEDPlasmaCorrections,\[Rho]\[Nu]CQED[av],\[Rho]\[Nu]CNoQED[av]];*)
+
+\[Rho]\[Nu]IncompleteDecoupling[av_]:=If[$QEDPlasmaCorrections,\[Rho]\[Nu]CQED[av],\[Rho]\[Nu]CNoQED[av]];
+
+
+(* ::Input::Initialization:: *)
+RecomputeIncompleteNeutrinoDecoupling:=(
+SolveaOFTwhenID;
+InvertaofTwhenID;
+Solve\[Rho]\[Nu]OFawhenID;
+)
+
+
+(* ::Input::Initialization:: *)
+T\[Nu]overTDecoupling[T_]:=(FourOverEleven DST[T])^(1/3);
+\[Rho]\[Nu]Decoupling[Tv_]:=aBB (kB T\[Nu]overTDecoupling[Tv]Tv)^4 7/8 Nneu;
+
+
+(* ::Input::Initialization:: *)
+T\[Nu]overTIncompleteDecouplingQED[Tv_]:=(\[Rho]\[Nu]CQED[aCQED[Tv]]/(aBB (kB Tv)^4 7/8 Nneu))^(1/4);
+T\[Nu]overTIncompleteDecouplingNoQED[Tv_]:=(\[Rho]\[Nu]CNoQED[aCNoQED[Tv]]/(aBB (kB Tv)^4 7/8 Nneu))^(1/4);
+
+T\[Nu]overTIncompleteDecoupling[T_]:=If[$QEDPlasmaCorrections,T\[Nu]overTIncompleteDecouplingQED[T],T\[Nu]overTIncompleteDecouplingNoQED[T]]
+
+
+(* ::Input::Initialization:: *)
+If[$IncompleteNeutrinoDecoupling,
+T\[Nu]overT[Tv_]:=T\[Nu]overTIncompleteDecoupling[Tv];,
+T\[Nu]overT[Tv_]:=T\[Nu]overTDecoupling[Tv];];
+
+
+(* ::Input::Initialization:: *)
+T\[Nu]overTDecouplingNoQED[T_]:=(FourOverElevenNoQED* DSTNoQED[T])^(1/3);
+T\[Nu]overTDecouplingQED[T_]:=(FourOverElevenQED* DSTQED[T])^(1/3);
+
+EffectiveNeutrinosQED[Tv_]:=3(T\[Nu]overTIncompleteDecouplingQED[Tv]/T\[Nu]overTDecouplingNoQED[Tv])^4;
+EffectiveNeutrinosNoQED[Tv_]:=3(T\[Nu]overTIncompleteDecouplingNoQED[Tv]/T\[Nu]overTDecouplingNoQED[Tv])^4;
+
+
+(* ::Input::Initialization:: *)
+zOFTDecouplingNoQED[T_]:=(DSTNoQED[Ti]/DSTNoQED[T])^(1/3);
+zOFTDecouplingQED[T_]:=(DSTQED[Ti]/DSTQED[T])^(1/3);
+
+zOFTIncompleteDecouplingNoQED[T_]:=(aCNoQED[T]T)/(aCNoQED[Ti]Ti);
+zOFTIncompleteDecouplingQED[T_]:=(aCQED[T]T)/(aCQED[Ti]Ti);
+
+
+(* ::Input::Initialization:: *)
+z\[Nu]OFTQED[T_]:=T\[Nu]overTIncompleteDecouplingQED[T]*zOFTIncompleteDecouplingQED[T];
+z\[Nu]OFTNoQED[T_]:=T\[Nu]overTIncompleteDecouplingNoQED[T]*zOFTIncompleteDecouplingNoQED[T];
+z\[Nu]OFT[T_]:=If[$QEDPlasmaCorrections,z\[Nu]OFTQED[T],z\[Nu]OFTNoQED[T]]
+
+
+(* ::Input::Initialization:: *)
+If[$IncompleteNeutrinoDecoupling,
+a[T_]:=aC[T],
+a[T_]:=TCMB0/(T DST[T]^(1/3))];
+
+
+(* ::Input::Initialization:: *)
+zT[T_]:=(a[T]T)/(a[Ti]Ti);
+znuT[T_]:=(a[T]T\[Nu]overT[T] T)/(a[Ti]T\[Nu]overT[Ti] Ti);
+
+
+(* ::Input::Initialization:: *)
+InvertaOFT:=(Tofa=Interpolation@Table[{a[T],T},{T,ListT}];);
+(*aI=Interpolation@Table[{T,a[T]},{T,ListT}];*)
+
+
+(* ::Input::Initialization:: *)
+\[Eta]factorT[Tv_]:=nB[a[Tv]]*\[Pi]^2/(2Zeta[3]) ((hbar clight)/(kB Tv))^3;
+
+
+(* ::Input::Initialization:: *)
+\[Eta]factorTBis[Tv_]:=\[Eta]factor*(zT[Tf]/zT[Tv])^3;
 
 
 (* ::Input::Initialization:: *)
@@ -536,7 +745,7 @@ FD\[Nu]e4p1[en_,\[Phi]_,x_]=Simplify@D[FD\[Nu][en,\[Phi],x]en^4,en];
 
 
 (* ::Input::Initialization:: *)
-\[Lambda]BORN=With[{q=Q/me},NIntegrate[en (en-q)^2 Sqrt[en^2-1],{en,1,q}]];
+\[Lambda]BORN=With[{q=Q/me},NIntegrate[en (en-q)^2 Sqrt[en^2-1],{en,1,q}]]
 
 
 (* ::Input::Initialization:: *)
@@ -551,11 +760,11 @@ Rd[x_]:=ArcTanh[x]/x;
 
 
 (* ::Input::Initialization:: *)
-Lfun[x_]=Integrate[Log[1-t]/t,{t,0,x},Assumptions->x<1&&x>0];(* Lfun is called the Spence function *)
+Lfun[x_]=Integrate[Log[1-t]/t,{t,0,x},Assumptions->x<1&&x>0](* Lfun is called the Spence function *)
 
 
 (* ::Input::Initialization:: *)
-LfunSeries[b_]=Normal@Series[-1/4*(1+b)^6*4/b Lfun[(2b)/(1+b)],{b,0,12(*22*)}];
+LfunSeries[b_]=Normal@Series[-1/4*(1+b)^6*4/b Lfun[(2b)/(1+b)],{b,0,12(*22*)}]
 
 
 (* ::Input::Initialization:: *)
@@ -578,7 +787,7 @@ RadiativeCorrectionsResummed[b_,y_,en_]:=(1+\[Alpha]FS/(2\[Pi]) (SirlinGFunction
 
 
 (* ::Input::Initialization:: *)
-RadiativeCorrections[b_,y_,en_]:=If[$ResummedLogsRadiativeCorrections,RadiativeCorrectionsResummed[b,y,en],(1+\[Alpha]FS/(2\[Pi]) Cd[b,y,en])];
+RadiativeCorrections[b_,y_,en_]:=If[$ResummedLogsRadiativeCorrections,RadiativeCorrectionsResummed[b,y,en],(1+\[Alpha]FS/(2\[Pi]) Cd[b,y,en])]
 
 
 (* ::Input::Initialization:: *)
@@ -600,12 +809,20 @@ bFermi[b_]:=(2\[Pi] \[Alpha]FS)/(1-Exp[-2\[Pi] \[Alpha]FS/b]);]
 
 (* ::Input::Initialization:: *)
 \[Lambda]FermiOnly=With[{q=Q/me ,b=Sqrt[en^2-1]/en,y=Q/me -en},
-NIntegrate[en (en-q)^2 en*bFermi[b],{en,1.0000001,q}]];
+NIntegrate[en (en-q)^2 en*bFermi[b],{en,1.0000001,q}]]
+
+
+(* ::Input::Initialization:: *)
+\[Lambda]FermiOnly/(\[Lambda]BORN)
 
 
 (* ::Input::Initialization:: *)
 \[Lambda]Rad=With[{q=Q/me ,b=Sqrt[en^2-1]/en,y=Q/me -en},
-NIntegrate[en (en-q)^2 en(RadiativeCorrections[b,y,en])*bFermi[b],{en,1.0000001,q}]];
+NIntegrate[en (en-q)^2 en(RadiativeCorrections[b,y,en])*bFermi[b],{en,1.0000001,q}]]
+
+
+(* ::Input::Initialization:: *)
+\[Lambda]Rad/\[Lambda]FermiOnly
 
 
 (* ::Input::Initialization:: *)
@@ -630,32 +847,40 @@ I\[Lambda]FM[pe_]:=With[{en=Sqrt[pe^2+1]},With[{b=pe/en},pe^2*
 
 
 (* ::Input::Initialization:: *)
-\[Lambda]FM=If[$FiniteNucleonMass,IntegrateCorrectionNeutronDecay[I\[Lambda]FM],0];
+\[Lambda]FM=If[$FiniteNucleonMass,IntegrateCorrectionNeutronDecay[I\[Lambda]FM],0]
 
 
 (* ::Input::Initialization:: *)
-\[Lambda]Rad;
+CorrectionRate=\[Lambda]FM/\[Lambda]BORN
 
 
 (* ::Input::Initialization:: *)
-\[Lambda]FM;
+\[Lambda]Rad
 
 
 (* ::Input::Initialization:: *)
-\[Lambda]RadandFM=\[Lambda]Rad+\[Lambda]FM;
+\[Lambda]FM
 
 
 (* ::Input::Initialization:: *)
-\[Lambda]Cooper=1.03887*1.6887;
-\[Lambda]Czarnecki=1.0390*1.6887 ;(* = (1+RC)*f with f=1.6887 and RC = 0.0390(8) [Czarnecki et al. 2004]] *)
+\[Lambda]RadandFM=\[Lambda]Rad+\[Lambda]FM
+
+
+(* ::Input::Initialization:: *)
+\[Lambda]Cooper=1.03887*1.6887
+\[Lambda]Czarnecki=1.0390*1.6887 (* = (1+RC)*f with f=1.6887 and RC = 0.0390(8) [Czarnecki et al. 2004]] *)
 
 
 (* ::Input::Initialization:: *)
 MixingCosAngle=0.97420;(* (+-16) Value taken from CKM particle data group 2017. More precisely from the review on Vud Vus of the PDG 2017.*)
-MyK=MixingCosAngle^2 (GF)^2 (1+3(gA)^2)/(2\[Pi]^3)*(me )^5 /hbar;
-1/MyK/\[Lambda]RadandFM;
-1/MyK/\[Lambda]Czarnecki;
-1/MyK/\[Lambda]Cooper;
+MyK=MixingCosAngle^2 (GF)^2 (1+3(gA)^2)/(2\[Pi]^3)*(me )^5 /hbar
+1/MyK/\[Lambda]RadandFM
+1/MyK/\[Lambda]Czarnecki
+1/MyK/\[Lambda]Cooper
+
+
+(* ::Input::Initialization:: *)
+\[Tau]neutron
 
 
 (* ::Input::Initialization:: *)
@@ -782,7 +1007,7 @@ DetailedBalanceRatio[T_]:=Exp[-(Q/(kB T))-\[Xi]\[Nu]](1+(1+\[Alpha]) Q/mp)^(3/2)
 
 
 (* ::Input::Initialization:: *)
-IPENdpCCR[pe_,x_,znu_,sgnq_]:=IPENdpFrom\[Chi]CCR[enOFpe[pe,x],pe,x,If[$TnuEqualT,x,znu],sgnq,\[Chi]];
+IPENdpCCR[pe_,x_,znu_,sgnq_]:=IPENdpFrom\[Chi]CCR[enOFpe[pe,x],pe,x,If[$TnuEqualT,x,znu],sgnq,\[Chi]]
 
 
 (* ::Input::Initialization:: *)
@@ -806,7 +1031,7 @@ IPENCCRT[en_,k_,x_,znu_,sgnq_]:=With[{p=Sqrt[en^2-1]},With[{b=p/en,A=(2 en^2+k^2
 ]];
 
 (* Compiled version to compute the integrals slightly faster *)
-IPENCCRTC=MyCompile[{{en,_Real},{k,_Real},{x,_Real},{znu,_Real},{sgnq,_Integer}},Evaluate[IPENCCRT[en,k,x,znu,sgnq]]];IPENCCRTCN[en_?NumericQ,k_,x_,znu_,sgnq_]:=IPENCCRTC[en,k,x,znu,sgnq];
+IPENCCRTC=MyCompile[{{en,_Real},{k,_Real},{x,_Real},{znu,_Real},{sgnq,_Integer}},Evaluate[IPENCCRT[en,k,x,znu,sgnq]]];IPENCCRTCN[en_?NumericQ,k_,x_,znu_,sgnq_]:=IPENCCRTC[en,k,x,znu,sgnq]
 
 
 (* ::Input::Initialization:: *)
@@ -818,18 +1043,18 @@ IPENCCRDiffBremsstrahlung[en_,k_,x_,znu_,sgnq_]:=With[{p=Sqrt[en^2-1],q=Q/me},Wi
 ]]];
 
 (* We compile for the integration *)
-IPENCCRDiffBremsstrahlungC=MyCompile[{{en,_Real},{k,_Real},{x,_Real},{znu,_Real},{sgnq,_Integer}},Evaluate[IPENCCRDiffBremsstrahlung[en,k,x,znu,sgnq]]];IPENCCRDiffBremsstrahlungCN[en_?NumericQ,k_,x_,znu_,sgnq_]:=IPENCCRDiffBremsstrahlungC[en,k,x,znu,sgnq];
+IPENCCRDiffBremsstrahlungC=MyCompile[{{en,_Real},{k,_Real},{x,_Real},{znu,_Real},{sgnq,_Integer}},Evaluate[IPENCCRDiffBremsstrahlung[en,k,x,znu,sgnq]]];IPENCCRDiffBremsstrahlungCN[en_?NumericQ,k_,x_,znu_,sgnq_]:=IPENCCRDiffBremsstrahlungC[en,k,x,znu,sgnq]
 
 
 (* ::Input::Initialization:: *)
 IPENFiveBodyT0[en_,k_,x_,znu_,sgnq_]:=With[{p=Sqrt[en^2-1]},With[{A=(2 en^2+k^2)Log[(en+p)/(en-p)]-4 p en,B=2 en Log[(en+p)/(en-p)]-4p},
-\[Alpha]FS/(2\[Pi] k) (FD[en,x])\[Chi]tilde[-en+k,znu,sgnq](A-k B)]];
+\[Alpha]FS/(2\[Pi] k) (FD[en,x])\[Chi]tilde[-en+k,znu,sgnq](A-k B)]]
 
 
 (* Compiled version *)
 IPENFiveBodyT0C=Compile[{{en,_Real},{k,_Real},{x,_Real},{znu,_Real},{sgnq,_Integer}},Evaluate[With[{p=Sqrt[en^2-1]},With[{A=(2 en^2+k^2)Log[(en+p)/(en-p)]-4 p en,B=2 en Log[(en+p)/(en-p)]-4p},
 \[Alpha]FS/(2\[Pi] k) (-BE[-k x])*(FD[en,x])\[Chi]tilde[-en+k,znu,sgnq](A-k B)]]],"RuntimeOptions"->"Speed",CompilationTarget->"C"];
-IPENFiveBodyT0CN[en_?NumericQ,k_,x_,znu_,sgnq_]:=IPENFiveBodyT0C[en,k,x,znu,sgnq];
+IPENFiveBodyT0CN[en_?NumericQ,k_,x_,znu_,sgnq_]:=IPENFiveBodyT0C[en,k,x,znu,sgnq]
 
 
 (* ::Input::Initialization:: *)
@@ -907,7 +1132,7 @@ NIntegrate[C1dE[en,x,If[$TnuEqualT,x,znu],-1],{en,1,Max[25,150/x]}]
 
 
 (* ::Input::Initialization:: *)
-\[Lambda]0:=If[$RadiativeCorrections,\[Lambda]Rad,\[Lambda]BORN]+If[$FiniteNucleonMass,\[Lambda]FM,0];
+\[Lambda]0:=If[$RadiativeCorrections,\[Lambda]Rad,\[Lambda]BORN]+If[$FiniteNucleonMass,\[Lambda]FM,0]
 
 
 (* ::Input::Initialization:: *)
@@ -931,58 +1156,48 @@ Clear[\[Lambda]nTOp]
 
 
 (* ::Input::Initialization:: *)
-LetterFromBoolean[Bool_]:=If[Bool,"T","F"];
-StringFromBoolean[BoolList_List]:=StringJoin[LetterFromBoolean/@BoolList];
-BooleanSuffix=StringFromBoolean[{$RadiativeCorrections,$RadiativeThermal,$FiniteNucleonMass,$CoupledFMandRC,$QEDPlasmaCorrections,$IncompleteNeutrinoDecoupling}]
+Clear[T\[Nu]overTArray, T\[Nu]overTGrid, RatesToInterpolateNP, RatesToInterpolatePN]
+T\[Nu]overTArray = Array[#&,30,{0.5,1.3}];
+T\[Nu]overTGrid = Table[0., {i, 1, Length[T\[Nu]overTArray]}, {j, 1, Length[ListT]}];
+RatesToInterpolateNP = Table[0., {i, 1, Length[T\[Nu]overTArray]}, {j, 1, Length[ListT]}];
+RatesToInterpolatePN = Table[0., {i, 1, Length[T\[Nu]overTArray]}, {j, 1, Length[ListT]}];
+Do[
+T\[Nu]overTGrid [[k,l]] = T\[Nu]overTArray[[k]],
+{k,1,Length[T\[Nu]overTArray]},
+{l,1,Length[ListT]}
+];
+
 
 
 (* ::Input::Initialization:: *)
-NamePENFilenp="Interpolations/NP_RATES";
-NamePENFilepn="Interpolations/PN_RATES";
-
-
-(* ::Input::Initialization:: *)
-$BornBool=Not[$RadiativeThermal]&&Not[$RadiativeCorrections]&&Not[$FiniteNucleonMass];
-
-
-(* ::Input::Initialization:: *)
-MyTableWeakRate:=If[$ParallelWeakRates,ParallelEvaluate[Off[NIntegrate::slwcon];];ParallelTable,Table]
-
+MyTableWeakRate:=If[$ParallelWeakRates,ParallelEvaluate[Off[NIntegrate::slwcon];];ParallelTable,Table];
 PreComputeWeakRates:=(
 Off[NIntegrate::slwcon];
 \[Lambda]nTOpTab=MyTableWeakRate[{T,\[Lambda]nTOpNormalized[T]},{T,ListT}];
 \[Lambda]pTOnTab=MyTableWeakRate[{T,\[Lambda]pTOnNormalized[T]},{T,ListT}];
-TabRatenp=\[Lambda]nTOpTab;
-TabRatepn=\[Lambda]pTOnTab;
 On[NIntegrate::slwcon];
-\[Lambda]nTOpI=MyInterpolationRate[ToExpression[TabRatenp]];
-\[Lambda]pTOnI=MyInterpolationRate[ToExpression[TabRatepn]];
 );
 
 
 (* ::Input::Initialization:: *)
-TabRatenp=Check[Import[NamePENFilenp,"TSV"],Print["Precomputed n -> p rate not found. We recompute the rates and store them. This can take very long"];$Failed,Import::nffil];
-
-TabRatepn=Check[Import[NamePENFilepn,"TSV"],Print["Precomputed p -> n rate not found. We recompute the rates and store them. This can take very long"];$Failed,Import::nffil];
-
-Timing[If[TabRatenp===$Failed||TabRatepn===$Failed||$RecomputeWeakRates,
-PreComputeWeakRates;,
-\[Lambda]nTOpIPre=MyInterpolationRate[ToExpression[TabRatenp]]@@@T\[Nu]overTTable;
-\[Lambda]pTOnIPre=MyInterpolationRate[ToExpression[TabRatepn]]@@@T\[Nu]overTTable;
-\[Lambda]nTOpI=MyInterpolationRate[Table[{ListT[[i]], \[Lambda]nTOpIPre[[i]]},{i,1,Length[ListT]}]];
-\[Lambda]pTOnI=MyInterpolationRate[Table[{ListT[[i]], \[Lambda]pTOnIPre[[i]]},{i,1,Length[ListT]}]];
-];]
-
-
-(* ::Input::Initialization:: *)
-LnTOp[Tv_]:=1/\[Tau]neutron*\[Lambda]nTOpI[Tv];
-LpTOn[Tv_]:=1/\[Tau]neutron*\[Lambda]pTOnI[Tv];
-LbarnTOp[Tv_]:=LpTOn[Tv];
+Do[
+T\[Nu]overT = Interpolation[Table[{ListT[[n]], T\[Nu]overTGrid [[p,n]]}, {n,1,Length[ListT]}]];
+PreComputeWeakRates;
+Do[
+RatesToInterpolateNP[[p, w]] = \[Lambda]nTOpTab[[w,2]];
+RatesToInterpolatePN[[p, w]] = \[Lambda]pTOnTab[[w,2]],
+{w, 1, Length[ListT]}
+];
+p,
+{p,1,Length[T\[Nu]overTArray]}
+]
 
 
 (* ::Input::Initialization:: *)
-1/LnTOp[Tf]
+RatesNP = Flatten[Table[{{T\[Nu]overTArray[[i]], ListT[[j]]}, RatesToInterpolateNP[[i,j]]},{i, 1, Length[T\[Nu]overTArray]}, {j, 1, Length[ListT]}],1];
+RatesPN = Flatten[Table[{{T\[Nu]overTArray[[i]], ListT[[j]]}, RatesToInterpolatePN[[i,j]]},{i, 1, Length[T\[Nu]overTArray]}, {j, 1, Length[ListT]}],1];
 
 
-timingEnd = AbsoluteTime[];
-Print["[PrimiCosmo]: Completed. Total Time - ", Round[timingEnd - timingStart], " seconds"]
+(* ::Input::Initialization:: *)
+Export["NP_RATES",RatesNP, "Table"];
+Export["PN_RATES",RatesPN, "Table"];

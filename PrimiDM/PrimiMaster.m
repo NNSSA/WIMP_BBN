@@ -28,34 +28,43 @@ SetDirectory[NotebookDirectory[]];
 
 
 (* ::Input::Initialization:: *)
-$EvolutionType= "WIMP";
-TnuStart = 30.0;
-Ombmin=0.02;
-Ombmax=0.04;
-MassDMArray = Join[Table[10^i,{i,-1,Log10[0.5],0.1}],Table[10^i,{i,Log10[0.55],Log10[5],0.05}],Table[i,{i,6,30,1}]];
+Quiet[<<WIMP_final.m];
+$EvolutionType= "WIMP"; 
+TmgStart = 30.1;
+CASE = "EE";
+SPIN = "BE";
+gDM = 1.;
+\[Sigma]v = 1.;
+BR = 0.;
+Ombmin=0.015;
+Ombmax=0.028;
+MassDMArray=Join[Table[10^i,{i,-1,Log10[0.9],0.1}],Table[i,{i,1,14,0.3}],Table[i,{i,14,30,2}]];
 h2\[CapitalOmega]b0Array = Table[i,{i,Ombmin,Ombmax,(Ombmax-Ombmin)/(40)}];
 Abundances = Table[0., {i, 1, Length[MassDMArray]}, {j, 1, Length[h2\[CapitalOmega]b0Array]}];
+SetSharedVariable[h2\[CapitalOmega]b0Array,Abundances];
 
 
 (* ::Input::Initialization:: *)
+LaunchKernels[16];
 Do[
-Clear[MassDM];
-MassDM = MassDMArray[[i]];
+Clear[MDM];
+MDM = MassDMArray[[i]];
 Quiet[<<PrimiCosmo.m];
-	
-          Do[
+DistributeDefinitions["Global`"];
+          ParallelDo[
             Clear[h2\[CapitalOmega]b0];
             h2\[CapitalOmega]b0 = h2\[CapitalOmega]b0Array[[j]];
+            Print[MassDM," ", h2\[CapitalOmega]b0];
             Quiet[<<PrimiNuc.m];
             Abundances[[i,j]] = Join[mgresultvec[[1]],Sequence@@Flatten[List[Yf[#]&/@ShortNames]],0.,0.,0.],
             {j,1,Length[h2\[CapitalOmega]b0Array]}
-        ],
+        ];
+
+ForExport = Flatten[Table[{MassDMArray[[i]],h2\[CapitalOmega]b0Array[[j]],Sequence@@Abundances[[i,j]]},{i,1,Length[MassDMArray]},{j,1,Length[h2\[CapitalOmega]b0Array]}],1];
+Export[ToString[StringForm["Case=``_Stat=``_gDM=``_Sigmav=``_BR=``",CASE,SPIN,gDM,\[Sigma]v,BR]],Join[{"m_DM     omega_b h^2     Neff       n         p         D         t         He3         a         Li7         Be7         chi2BBN         chi2CMB         chi2BBNCMB"},ForExport],"Table","FieldSeparators"->" "],
 
 {i,1,Length[MassDMArray]}
 ]
-
-ForExport = Flatten[Table[{MassDMArray[[i]],h2\[CapitalOmega]b0Array[[j]],Sequence@@Abundances[[i,j]]},{i,1,Length[MassDMArray]},{j,1,Length[h2\[CapitalOmega]b0Array]}],1];
-Export["simple_wimp_abundances.txt",Join[{"m_DM     omega_b h^2     Neff       n         p         D         t         He3         a         Li7         Be7         chi2BBN         chi2CMB         chi2BBNCMB"},ForExport],"Table","FieldSeparators"->" "];
 
 
 

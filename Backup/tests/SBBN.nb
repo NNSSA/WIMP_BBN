@@ -1,0 +1,149 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 11.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      5781,        141]
+NotebookOptionsPosition[      4920,        121]
+NotebookOutlinePosition[      5274,        137]
+CellTagsIndexPosition[      5231,        134]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[
+ RowBox[{"Quit", "[", "]"}]], "Input",
+ CellChangeTimes->{{3.7705331210645523`*^9, 3.770533122548183*^9}, 
+   3.7705332149268312`*^9, {3.770533256976459*^9, 3.770533260238303*^9}},
+ CellLabel->"In[1]:=",ExpressionUUID->"4c834a10-6061-416f-98d8-2b1659025a16"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"SetDirectory", "[", 
+   RowBox[{"NotebookDirectory", "[", "]"}], "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"PrependTo", "[", 
+   RowBox[{"$Path", ",", " ", 
+    RowBox[{"FileNameJoin", "[", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"NotebookDirectory", "[", "]"}], ",", "\"\<..\>\"", ",", "  ", 
+       "\"\<Miguel_SM_Code\>\""}], "}"}], "]"}]}], "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"PrependTo", "[", 
+   RowBox[{"$Path", ",", " ", 
+    RowBox[{"FileNameJoin", "[", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"NotebookDirectory", "[", "]"}], ",", "\"\<..\>\"", ",", "  ", 
+       "\"\<Miguel_SM_Code\>\"", ",", " ", "\"\<QED_MeV\>\""}], "}"}], 
+     "]"}]}], "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"PrependTo", "[", 
+   RowBox[{"$Path", ",", " ", 
+    RowBox[{"FileNameJoin", "[", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"NotebookDirectory", "[", "]"}], ",", "\"\<..\>\"", ",", "  ", 
+       "\"\<Miguel_SM_Code\>\"", ",", " ", "\"\<Rate_MeV\>\""}], "}"}], 
+     "]"}]}], "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"PrependTo", "[", 
+   RowBox[{"$Path", ",", " ", 
+    RowBox[{"FileNameJoin", "[", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"NotebookDirectory", "[", "]"}], ",", "\"\<..\>\""}], "}"}], 
+     "]"}]}], "]"}], ";"}]}], "Input",
+ CellChangeTimes->{{3.770380957240947*^9, 3.770380969896655*^9}, {
+   3.770381264890136*^9, 3.770381282788279*^9}, {3.770381459675397*^9, 
+   3.770381471592602*^9}, {3.770381520262249*^9, 3.770381529964879*^9}, {
+   3.770381592975278*^9, 3.770381597285502*^9}, {3.770381644931922*^9, 
+   3.7703817019106503`*^9}, {3.7703817575232887`*^9, 3.770381771422761*^9}, {
+   3.770381802918988*^9, 3.7703818075036707`*^9}, {3.770381841458559*^9, 
+   3.7703818615982113`*^9}, {3.770381908089769*^9, 3.7703819466805983`*^9}, {
+   3.770381993645652*^9, 3.770382047104465*^9}, {3.7703821326195927`*^9, 
+   3.770382172632422*^9}, {3.770382411501281*^9, 3.7703824164094133`*^9}, {
+   3.770382510136607*^9, 3.770382518323451*^9}, 3.770382642342469*^9, {
+   3.77038282296297*^9, 3.770382951566947*^9}, {3.770383409662642*^9, 
+   3.7703834102919703`*^9}, 3.7703872022318974`*^9},
+ CellLabel->"In[1]:=",ExpressionUUID->"e5de2298-3d4b-4265-aa90-719b29f341a8"],
+
+Cell[BoxData[
+ RowBox[{"<<", "SM_Evolution.m"}]], "Input",
+ CellChangeTimes->{{3.770381544460887*^9, 3.7703815471427402`*^9}, {
+   3.770381788329379*^9, 3.770381793008168*^9}, {3.770382320063209*^9, 
+   3.770382320226491*^9}, {3.770382370338389*^9, 3.770382382720839*^9}, 
+   3.7703824312757*^9, 3.770382630535631*^9, 3.770383415092605*^9, 
+   3.77038484764548*^9, {3.7703858991830807`*^9, 3.770385905646697*^9}, 
+   3.7703872149173803`*^9},
+ CellLabel->"In[6]:=",ExpressionUUID->"fb383b7f-565d-4e6f-b504-268d444bf9e0"],
+
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{{3.7705318130307503`*^9, 3.770531819702174*^9}},
+ CellLabel->"In[7]:=",ExpressionUUID->"da90725b-4a8f-4c86-af4d-99b60e37f244"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"$UseMiguel", " ", "=", " ", "True"}], ";"}]], "Input",
+ CellChangeTimes->{{3.7705324827246237`*^9, 3.770532497835607*^9}},
+ CellLabel->"In[7]:=",ExpressionUUID->"92c6d634-8544-436c-acc5-08e0c9356e1c"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Quiet", "[", 
+   RowBox[{"<<", "PRIMAT-Main.m"}], "]"}], ";"}]], "Input",
+ CellChangeTimes->{
+  3.770387332691556*^9, {3.770387878837817*^9, 3.7703878810828867`*^9}, 
+   3.770533033662722*^9, {3.770533181505693*^9, 3.770533201255415*^9}, {
+   3.770533357409792*^9, 
+   3.770533359217894*^9}},ExpressionUUID->"1af76c74-9c0e-414c-8ee0-\
+ff3fa612df46"],
+
+Cell[BoxData[
+ RowBox[{"(*", "\[IndentingNewLine]", 
+  RowBox[{"TODO", ":", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"-", " ", "Add"}], " ", "contribution", " ", "to", " ", "Hubble", 
+    " ", "parameter", " ", "in", " ", "PRIMAT"}]}], "*)"}]], "Input",
+ CellChangeTimes->{
+  3.7705303910413303`*^9, {3.770530799706482*^9, 3.770530828740423*^9}},
+ CellLabel->"In[17]:=",ExpressionUUID->"135ccb42-52bf-470c-9a37-c90ed13b0ce8"]
+},
+Evaluator->"Local",
+WindowSize->{3090, 1689},
+WindowMargins->{{0, Automatic}, {0, Automatic}},
+FrontEndVersion->"11.3 for Linux x86 (64-bit) (March 6, 2018)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[558, 20, 272, 4, 63, "Input",ExpressionUUID->"4c834a10-6061-416f-98d8-2b1659025a16"],
+Cell[833, 26, 2326, 52, 252, "Input",ExpressionUUID->"e5de2298-3d4b-4265-aa90-719b29f341a8"],
+Cell[3162, 80, 519, 8, 63, "Input",ExpressionUUID->"fb383b7f-565d-4e6f-b504-268d444bf9e0"],
+Cell[3684, 90, 172, 2, 63, "Input",ExpressionUUID->"da90725b-4a8f-4c86-af4d-99b60e37f244"],
+Cell[3859, 94, 235, 4, 63, "Input",ExpressionUUID->"92c6d634-8544-436c-acc5-08e0c9356e1c"],
+Cell[4097, 100, 384, 9, 63, "Input",ExpressionUUID->"1af76c74-9c0e-414c-8ee0-ff3fa612df46"],
+Cell[4484, 111, 432, 8, 158, "Input",ExpressionUUID->"135ccb42-52bf-470c-9a37-c90ed13b0ce8"]
+}
+]
+*)
+
