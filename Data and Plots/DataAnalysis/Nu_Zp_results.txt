@@ -1,0 +1,10 @@
+-----------------------------------------------------------
+ Conf. Lev. 	 BBN 		 CMB 		 BBN + CMB
+-----------------------------------------------------------
+ 1 sigma 	 4.60 MeV 	 9.80 MeV 	 9.54 MeV
+ 2 sigma 	 3.15 MeV 	 7.79 MeV 	 7.85 MeV
+ 3 sigma 	 2.27 MeV 	 6.22 MeV 	 6.38 MeV
+ 4 sigma 	 1.69 MeV 	 4.99 MeV 	 5.12 MeV
+ 5 sigma 	 1.28 MeV 	 3.97 MeV 	 4.13 MeV
+-----------------------------------------------------------
+NOTE: A value of 0.0 MeV means no bound could be determined.

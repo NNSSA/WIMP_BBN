@@ -1,0 +1,12 @@
+Data Analysis
+-------------
+
+There are two .py file contained in this folder:
+
+	- utils.py
+		This contains the various plotting commands and functions for data manipulation. These are then called in master.py.
+
+	- master.py
+		This contains a single function definition, run_scenario. All the input that is required is the name of the scenario that matches the data file e.g. Nu_Zp for a data file Nu_Zp.txt. The code saves the various figures and results with suitable naming conventions. An example is contained in the __main__ module.
+
+There is also an ipython notebook ChiSquared.ipynb containing an interactive form of master.py.
