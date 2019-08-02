@@ -1,0 +1,3 @@
+[submodule "Forecasts/class"]
+	path = Forecasts/class
+	url = https://github.com/lesgourg/class_public
