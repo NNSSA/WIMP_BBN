@@ -63,7 +63,7 @@ def plot_abundances(data, scenario):
                s=20,
                alpha=0.8,
                c=data['OmegaB'],
-               cmap='cool')
+               cmap='PiYG')
     ax1.set_xlabel(r'$m_{\chi} \, \mathrm{[MeV]}$')
     ax1.set_ylabel(r'$Y_p$')
     ax1.set_xscale('log')
@@ -71,20 +71,20 @@ def plot_abundances(data, scenario):
     ax1.add_patch(Rectangle(xy=(0.1, YpCentre - YpError),
                             width=(30.0 - 0.1),
                             height=2*YpError,
-                            alpha=0.2,
-                            color='r'))
+                            alpha=0.1,
+                            color='k'))
     ax2.add_patch(Rectangle(xy=(0.1, (DHCentre - DHError)*10**5),
                             width=(30.0 - 0.1),
                             height=2*DHError*10**5,
-                            alpha=0.2,
-                            color='r'))
+                            alpha=0.1,
+                            color='k'))
     sc = ax2.scatter(data['mass'], data['D/H'] * 10**5, 
                lw=0.0,
                marker='.',
                s=20,
                alpha=0.8,
                c=data['OmegaB'],
-               cmap='cool')
+               cmap='PiYG')
     ax2.set_xlabel(r'$m_{\chi} \, \mathrm{[MeV]}$')
     ax2.set_ylabel(r'$\mathrm{D}/\mathrm{H} \times 10^5$')
     ax2.set_xscale('log')
@@ -135,7 +135,7 @@ def plot_mchi_omegab_contours(data, scenario, type):
     ax = plt.subplot(1,1,1)
     ct = ax.contour(mass_grid, omegab_grid, chisq_grid,
                     levels=confidence_levels,
-                    cmap='cool')
+                    cmap='PiYG')
     ct.levels = [r'$1\sigma$', r'$2\sigma$', r'$3\sigma$', r'$4\sigma$', r'$5\sigma$']
     ax.set_xlabel(r'$m_\chi \, \mathrm{[MeV]}$')
     ax.set_ylabel(r'$\Omega_b h^2$')
@@ -192,7 +192,7 @@ def plot_deltachisq(data, scenario, zoom=False):
     confidence_levels = [1.0, 4.0, 9.0, 16.0, 25.0]
     ct = plt.gca().contour(MC, CSQ, CSQ, 
                     levels=confidence_levels,
-                    cmap='cool')
+                    cmap='PiYG')
     ct.levels = [r'$1\sigma$', r'$2\sigma$', r'$3\sigma$', r'$4\sigma$', r'$5\sigma$']
     plt.xlabel(r'$m_\chi \, \mathrm{[MeV]}$')
     plt.ylabel(r'$\Delta \tilde{\chi}^2_{\mathrm{BBN}}$')
@@ -235,7 +235,7 @@ def chisqBBN(Yp, DoverH):
     YpError = 0.003
     YpErrorTh = 0.00017
     DHCentre = 2.569 * 10**(-5)
-    DHError = 0.027 * 10**(-5)
+    DHError = (0.027) * 10**(-5)
     DHErrorTh = 0.036 * 10**(-5)
     
     return np.power(Yp - YpCentre, 2)/(YpError**2 + YpErrorTh**2) \
@@ -254,6 +254,12 @@ def chisqCMB(OmegaB, Neff, Yp):
     Delta1 = 0.00022
     Delta2 = 0.31
     Delta3 = 0.018
+    # rho12 = 0.8294866703898539
+    # rho13 = 0.2931412125354891
+    # rho23 = -0.19678653064061352
+    # Delta1 = 0.00016615671572250368
+    # Delta2 = 0.09439790664795518
+    # Delta3 = 0.006823614334675781
     SigmaCMB = np.array([[Delta1**2, Delta1*Delta2*rho12, Delta1*Delta3*rho13], 
                          [Delta1*Delta2*rho12, Delta2**2, Delta2*Delta3*rho23], 
                          [Delta1*Delta3*rho13, Delta2*Delta3*rho23, Delta3**2]])
@@ -273,24 +279,27 @@ def chisq(Yp, DoverH, OmegaB, Neff, type):
         return chisqBBNandCMB(Yp, DoverH, OmegaB, Neff)
 
 
-def get_chisq_marg_interpolation(data, type):
+def get_chisq_marg_interpolation(data, type, kind='cubic'):
     CHISQ = get_chisq_grid(data, type)
     masses = get_masses(data)
     chisq_marg = np.empty(len(masses))
     for idx, mass in enumerate(masses):
         chisq_marg[idx] = np.min(CHISQ[:, idx])
     chisq_marg_rescaled = chisq_marg - np.min(chisq_marg)
-    return interp1d(masses, chisq_marg_rescaled)
+    return interp1d(masses, chisq_marg_rescaled, kind=kind)
 
-def save_results(data, scenario):
-    bbninterpfn = get_chisq_marg_interpolation(data, type='BBN')
-    cmbinterpfn = get_chisq_marg_interpolation(data, type='CMB')
-    bbnandcmbinterpfn = get_chisq_marg_interpolation(data, type='BBN+CMB')
+def save_results(data, scenario, x0=1.0, save=True):
+    bbninterpfn = get_chisq_marg_interpolation(data, type='BBN', kind='cubic')
+    cmbinterpfn = get_chisq_marg_interpolation(data, type='CMB', kind='cubic')
+    bbnandcmbinterpfn = get_chisq_marg_interpolation(data, type='BBN+CMB', kind='cubic')
     
     bbnbounds = []
     cmbbounds = []
     bbnandcmbbounds = []
     for level in [1.0, 4.0, 9.0, 16.0, 25.0]:
+        tempbbnbounds = []
+        tempcmbbounds = []
+        tempbbnandcmbbounds = []
         def bbntempfn(mchi):
             return bbninterpfn(mchi) - level
         def cmbtempfn(mchi):
@@ -298,24 +307,77 @@ def save_results(data, scenario):
         def bbnandcmbtempfn(mchi):
             return bbnandcmbinterpfn(mchi) - level
         try:      
-            bbnbounds.append(fsolve(bbntempfn, x0=1.0)[0])
+            tempbbnbounds.append(fsolve(bbntempfn, x0=0.01)[0])
         except:
-            bbnbounds.append(0.0)
-        try:
-            cmbbounds.append(fsolve(cmbtempfn, x0=1.0)[0])
+            tempbbnbounds.append(0.0)
+        try:      
+            tempbbnbounds.append(fsolve(bbntempfn, x0=0.1)[0])
         except:
-            cmbbounds.append(0.0)
-        try:
-            bbnandcmbbounds.append(fsolve(bbnandcmbtempfn, x0=1.0)[0])
+            tempbbnbounds.append(0.0)
+        try:      
+            tempbbnbounds.append(fsolve(bbntempfn, x0=1.0)[0])
         except:
-            bbnandcmbbounds.append(0.0)
+            tempbbnbounds.append(0.0)
+        try:      
+            tempbbnbounds.append(fsolve(bbntempfn, x0=x0)[0])
+        except:
+            tempbbnbounds.append(0.0)
+        bbnbounds.append(np.max(tempbbnbounds))
+        try:      
+            tempcmbbounds.append(fsolve(cmbtempfn, x0=0.01)[0])
+        except:
+            tempcmbbounds.append(0.0)
+        try:      
+            tempcmbbounds.append(fsolve(cmbtempfn, x0=0.1)[0])
+        except:
+            tempcmbbounds.append(0.0)
+        try:      
+            tempcmbbounds.append(fsolve(cmbntempfn, x0=1.0)[0])
+        except:
+            tempcmbbounds.append(0.0)
+        try:      
+            tempcmbbounds.append(fsolve(cmbntempfn, x0=10.0)[0])
+        except:
+            tempcmbbounds.append(0.0)
+        try:      
+            tempcmbbounds.append(fsolve(cmbntempfn, x0=x0)[0])
+        except:
+            tempcmbbounds.append(0.0)
+        cmbbounds.append(np.max(tempcmbbounds))
+        try:      
+            tempbbnandcmbbounds.append(fsolve(bbnandcmbtempfn, x0=0.01)[0])
+        except:
+            tempbbnandcmbbounds.append(0.0)
+        try:      
+            tempbbnandcmbbounds.append(fsolve(bbnandcmbtempfn, x0=0.1)[0])
+        except:
+            tempbbnandcmbbounds.append(0.0)
+        try:      
+            tempbbnandcmbbounds.append(fsolve(bbnandcmbntempfn, x0=1.0)[0])
+        except:
+            tempbbnandcmbbounds.append(0.0)
+        try:      
+            tempbbnandcmbbounds.append(fsolve(bbnandcmbntempfn, x0=x0)[0])
+        except:
+            tempbbnandcmbbounds.append(0.0)
+        bbnandcmbbounds.append(np.max(tempbbnandcmbbounds))
 
-    with open(scenario + '_results.txt', 'w') as f:
-        print("-----------------------------------------------------------", file=f)
-        print(" Conf. Lev. \t BBN \t\t CMB \t\t BBN + CMB", file=f)
-        print("-----------------------------------------------------------", file=f)
+    if save:
+        with open(scenario + '_results.txt', 'w') as f:
+            print("-----------------------------------------------------------", file=f)
+            print(" Conf. Lev. \t BBN \t\t CMB \t\t BBN + CMB", file=f)
+            print("-----------------------------------------------------------", file=f)
+            for idx,_ in enumerate(bbnbounds):
+                print(" {} sigma \t {:.2f} MeV \t {:.2f} MeV \t {:.2f} MeV".format(idx + 1, bbnbounds[idx], cmbbounds[idx], bbnandcmbbounds[idx]), file=f)
+            print("-----------------------------------------------------------", file=f)
+            print("")
+            print("NOTE: A value of 0.0 MeV means no bound could be determined.", file=f)
+    else:
+        print("-----------------------------------------------------------")
+        print(" Conf. Lev. \t BBN \t\t CMB \t\t BBN + CMB")
+        print("-----------------------------------------------------------")
         for idx,_ in enumerate(bbnbounds):
-            print(" {} sigma \t {:.2f} MeV \t {:.2f} MeV \t {:.2f} MeV".format(idx + 1, bbnbounds[idx], cmbbounds[idx], bbnandcmbbounds[idx]), file=f)
-        print("-----------------------------------------------------------", file=f)
+            print(" {} sigma \t {:.2f} MeV \t {:.2f} MeV \t {:.2f} MeV".format(idx + 1, bbnbounds[idx], cmbbounds[idx], bbnandcmbbounds[idx]))
+        print("-----------------------------------------------------------")
         print("")
-        print("NOTE: A value of 0.0 MeV means no bound could be determined.", file=f)
+        print("NOTE: A value of 0.0 MeV means no bound could be determined.")
