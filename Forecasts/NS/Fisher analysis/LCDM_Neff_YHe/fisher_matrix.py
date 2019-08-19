@@ -149,28 +149,28 @@ slice_covariance_planck_stage4 = np.array([[covariance_planck_stage4[key1, key2]
 ################################################
 
 # pprint.pprint(fisher)
-# print("\nTotal Stage-IV Fisher matrix:\n", params_names, "\n", fisher_matrix, "\n")
-# print("\nTotal Stage-IV covariance matrix:\n", inverse_fisher_matrix, "\n")
-# print("\nFisher x covariance", fisher_matrix@inverse_fisher_matrix, "\n")
+print("\nTotal Stage-IV Fisher matrix:\n", params_names, "\n", fisher_matrix, "\n")
+print("\nTotal Stage-IV covariance matrix:\n", inverse_fisher_matrix, "\n")
+print("\nFisher x covariance", fisher_matrix@inverse_fisher_matrix, "\n")
 
-# print("\nStage-IV Fisher matrix (Omegabh^2, Neff, YHe):\n", slice_fisher_matrix, "\n")
-# print("\nStage-IV covariance matrix (Omegabh^2, Neff, YHe):\n", inverse_slice_fisher_matrix, "\n")
+print("\nStage-IV Fisher matrix (Omegabh^2, Neff, YHe):\n", slice_fisher_matrix, "\n")
+print("\nStage-IV covariance matrix (Omegabh^2, Neff, YHe):\n", inverse_slice_fisher_matrix, "\n")
 
 print("\nStage-IV standard deviations:")
 for num in range(len_params):
     print("{}: {}".format(params_names[num], np.sqrt(inverse_fisher_matrix[num,num])))
 
 
-# print("\nPlanck2018 + Stage-IV Fisher matrix:\n", params_names, "\n", fisher_planck_stage4, "\n")
-# print("\nPlanck2018 + Stage-IV covariance matrix:\n", covariance_planck_stage4, "\n")
-# print("\nFisher x covariance", fisher_planck_stage4@covariance_planck_stage4, "\n")
+print("\nPlanck2018 + Stage-IV Fisher matrix:\n", params_names, "\n", fisher_planck_stage4, "\n")
+print("\nPlanck2018 + Stage-IV covariance matrix:\n", covariance_planck_stage4, "\n")
+print("\nFisher x covariance", fisher_planck_stage4@covariance_planck_stage4, "\n")
 
-# print("\nPlanck2018 + Stage-IV Fisher matrix (Omegabh^2, Neff, YHe):\n", slice_fisher_planck_stage4, "\n")
-# print("\nPlanck2018 + Stage-IV covariance matrix (Omegabh^2, Neff, YHe):\n", slice_covariance_planck_stage4, "\n")
+print("\nPlanck2018 + Stage-IV Fisher matrix (Omegabh^2, Neff, YHe):\n", slice_fisher_planck_stage4, "\n")
+print("\nPlanck2018 + Stage-IV covariance matrix (Omegabh^2, Neff, YHe):\n", slice_covariance_planck_stage4, "\n")
 
 print("\nPlanck2018 + Stage-IV standard deviations:")
 for num in range(len_params):
     print("{}: {}".format(params_names[num], np.sqrt(covariance_planck_stage4[num,num])))
 
 
-np.savetxt("Fisher_Planck_S4.txt", slice_fisher_planck_stage4)
+np.savetxt("Covariance_Planck_S4.txt", slice_covariance_planck_stage4)
